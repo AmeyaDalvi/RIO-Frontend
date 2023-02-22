@@ -6,7 +6,6 @@ import { LoginForm } from "./LoginForm";
 import { useEffect, useState } from "react";
 // import { useNavigate } from "react-router-dom";
 import { baseUrl } from "utils/baseUrl";
-import useWindowDimensions from "utils/useWindowDimensions";
 import Testimonial from "components/extras/Testimonial";
 import { useRouter } from "next/router";
 
@@ -30,7 +29,6 @@ export const Login = () => {
   //   const navigate = useNavigate();
   const [invalidCredential, setInvalidCredential] = useState(false);
   const [responseError, setResponseError] = useState(false);
-  const size = useWindowDimensions();
   const router = useRouter();
 
   useEffect(() => {
