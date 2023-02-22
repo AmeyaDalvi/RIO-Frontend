@@ -1,8 +1,16 @@
-import GoogleLogin from "components/Login/GoogleLog";
 import React from "react";
+import NoSsr from "@mui/base/NoSsr";
+import { Login } from "components/Login/Login";
+// or
 
 const login = () => {
-  return <GoogleLogin />;
+  return (
+    // <NoSsr>
+
+    <Login />
+
+    // </NoSsr>
+  );
 };
 
 export default login;

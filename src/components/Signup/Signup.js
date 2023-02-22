@@ -1,14 +1,15 @@
 import { Grid } from "@mui/material";
 // import { makeStyles } from "@mui/styles";
-import { LoginBanner } from "./LoginBanner";
-import { LoginForm } from "./LoginForm";
+
+import { SignupForm } from "./SignupForm";
+import { SignupBanner } from "./SignupBanner";
 // import UserContext from "../store/User-Context";
 import { useEffect, useState } from "react";
 // import { useNavigate } from "react-router-dom";
 import { baseUrl } from "utils/baseUrl";
-import useWindowDimensions from "utils/useWindowDimensions";
 import Testimonial from "components/extras/Testimonial";
 import { useRouter } from "next/router";
+import useWindowDimensions from "utils/useWindowDimensions";
 
 // const useStyles = makeStyles((theme) => ({
 //   loginBanner: {
@@ -24,26 +25,21 @@ import { useRouter } from "next/router";
 //   },
 // }));
 
-export const Login = () => {
+export const Signup = () => {
   //   const classes = useStyles();
   //   const userCtx = useContext(UserContext);
   //   const navigate = useNavigate();
-  const [invalidCredential, setInvalidCredential] = useState(false);
+  const router = useRouter();
   const [responseError, setResponseError] = useState(false);
   const size = useWindowDimensions();
-  const router = useRouter();
 
   useEffect(() => {
-    setInvalidCredential(false);
     setResponseError(false);
   }, []);
 
-  const loginFormHandler = async (userData) => {
-    setInvalidCredential(false);
-    setResponseError(false);
-
+  const signupFormHandler = async (userData) => {
     try {
-      const response = await fetch(baseUrl + "/login", {
+      const response = await fetch(baseUrl + "/signup", {
         method: "POST",
         body: JSON.stringify(userData),
         headers: {
@@ -57,13 +53,13 @@ export const Login = () => {
         localStorage.setItem("token", data.token);
 
         // userCtx.setUserData(data.response);
-        router.replace("/products");
-      } else if (response.status === 403) {
-        setInvalidCredential(true);
+        // const data1 = JSON.parse(localStorage.getItem("readifyUser"));
+        // navigate("/", { replace: true });
+      } else if (response.status === 401) {
+        setResponseError(true);
       }
     } catch (error) {
       console.log(error);
-
       setResponseError(true);
     }
   };
@@ -76,7 +72,7 @@ export const Login = () => {
     >
       <Grid
         item
-        key="login-form"
+        key="signup-form"
         md={5}
         sx={{
           display: "flex",
@@ -87,23 +83,21 @@ export const Login = () => {
           height: "calc(100vh + 10px)",
         }}
       >
-        <LoginForm
-          onLoginSubmit={loginFormHandler}
-          invalidError={invalidCredential}
+        <SignupForm
+          onSignUpSubmit={signupFormHandler}
           responseError={responseError}
         />
       </Grid>
-
       <Grid
         item
-        key="login-image"
+        key="signup-image"
         md={7}
         sx={{
           display: { xs: "none", sm: "none", md: "block" },
           height: "calc(100vh + 10px)",
         }}
       >
-        <LoginBanner />
+        <SignupBanner />
         <Testimonial />
       </Grid>
     </Grid>

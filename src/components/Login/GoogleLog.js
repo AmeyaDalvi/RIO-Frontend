@@ -18,10 +18,10 @@ const GoogleLog = () => {
       });
 
       if (response.status === 200) {
-        router.push("/products");
+        router.replace("/products");
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
   return (
@@ -30,6 +30,8 @@ const GoogleLog = () => {
         <GoogleLogin
           shape="pill"
           ux_mode="popup"
+          size="large"
+          logo_alignment="center"
           onSuccess={(credentialResponse) => {
             loginFormHandler(credentialResponse);
           }}
