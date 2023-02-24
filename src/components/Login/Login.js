@@ -1,7 +1,7 @@
 import { Grid } from "@mui/material";
 // import { makeStyles } from "@mui/styles";
-import { LoginBanner } from "./LoginBanner";
 import { LoginForm } from "./LoginForm";
+import { Banner } from "../extras/Banner";
 // import UserContext from "../store/User-Context";
 import { useEffect, useState } from "react";
 // import { useNavigate } from "react-router-dom";
@@ -51,8 +51,9 @@ export const Login = () => {
 
       if (response.status === 200) {
         const data = await response.json();
-        localStorage.setItem("rioUser", JSON.stringify(data.response));
-        localStorage.setItem("token", data.token);
+        // localStorage.setItem("rioUser", JSON.stringify(data.response));
+        // localStorage.setItem("token", data.token);
+        console.log(data.message);
 
         // userCtx.setUserData(data.response);
         router.replace("/products");
@@ -101,7 +102,7 @@ export const Login = () => {
           height: "calc(100vh + 10px)",
         }}
       >
-        <LoginBanner />
+        <Banner />
         <Testimonial />
       </Grid>
     </Grid>

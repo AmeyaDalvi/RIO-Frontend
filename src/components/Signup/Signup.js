@@ -1,37 +1,17 @@
 import { Grid } from "@mui/material";
-// import { makeStyles } from "@mui/styles";
 
 import { SignupForm } from "./SignupForm";
-import { SignupBanner } from "./SignupBanner";
+import { Banner } from "components/extras/Banner";
 // import UserContext from "../store/User-Context";
 import { useEffect, useState } from "react";
-// import { useNavigate } from "react-router-dom";
 import { baseUrl } from "utils/baseUrl";
 import Testimonial from "components/extras/Testimonial";
 import { useRouter } from "next/router";
-import useWindowDimensions from "utils/useWindowDimensions";
-
-// const useStyles = makeStyles((theme) => ({
-//   loginBanner: {
-//     background: "linear-gradient(180deg, #EA5DEB 0%, #832BE0 100%)",
-//     textShadow: "2px 2px 2px rgba(0,0,0,0.26)",
-//   },
-
-//   loginForm: {
-//     display: "flex",
-//     padding: "0",
-//     width: "100%",
-//     height: "calc(100vh - 66px)",
-//   },
-// }));
 
 export const Signup = () => {
-  //   const classes = useStyles();
   //   const userCtx = useContext(UserContext);
-  //   const navigate = useNavigate();
   const router = useRouter();
   const [responseError, setResponseError] = useState(false);
-  const size = useWindowDimensions();
 
   useEffect(() => {
     setResponseError(false);
@@ -54,7 +34,7 @@ export const Signup = () => {
 
         // userCtx.setUserData(data.response);
         // const data1 = JSON.parse(localStorage.getItem("readifyUser"));
-        // navigate("/", { replace: true });
+        router.replace("/products");
       } else if (response.status === 401) {
         setResponseError(true);
       }
@@ -97,7 +77,7 @@ export const Signup = () => {
           height: "calc(100vh + 10px)",
         }}
       >
-        <SignupBanner />
+        <Banner />
         <Testimonial />
       </Grid>
     </Grid>
