@@ -1,40 +1,98 @@
-.container1 {
-  font-size: 29px;
-  display: inline;
-  justify-content: center;
+.container {
+  padding: 0 0rem;
+  display: flex;
+  max-width: 1024px;
+  /* border: 2px solid red; */
+  flex-direction: column;
+  margin: 0 auto;
+  justify-self: center !important;
+  /* height: 90vh; */
+}
+
+/*------------------------------------*/
+
+.image__container {
+  width: 100%;
+  height: 100%;
+  /* border: 2px solid green; */
+  display: flex;
+  justify-content: flex-start;
   align-items: center;
-  /*width: 100%;*/
-  /*height: 100vh; /* set the height of the container to the full viewport height */
+  flex-grow: 0.4;
 }
 
-.centered {
-  text-align: center; /* center the text horizontally */
-  vertical-align: middle; /* center the text vertically */
-  /*width:100vh;*/
+.para__container {
+  width: 100%;
+  height: 100%;
+  /* border: 2px solid green; */
+  flex-grow: 0.2;
+  text-align: center;
+  padding: 2rem 0;
+  line-height: 2rem;
 }
 
-.imagestyle {
-  padding-left: 10%;
-  width: 500px;
-  height: 420px;
-  /*border-radius: 50%;*/
-  /*border: 2px solid black;*/
+.image1 {
+  display: block;
 }
-  
-.block1, .block2 {
-    display: inline-block;
-    width: 50%;
+.image2 {
+  display: none;
+}
+
+@media screen and (min-width: 1200px) {
+}
+@media screen and (min-width: 1024px) and (max-width: 1199px) {
+}
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+  .about {
+    margin-bottom: 10rem;
   }
-  
-.block1 {
-  padding-top: 4%;
-    background-color: white;
+  .titleContainer {
+    flex-direction: column;
+    align-items: center;
   }
-  
-  .block2 {
-    padding-top: 3%;
-    padding-right: 10%;
-    font-size: 29px;
-    font-weight: bold;
-    background-color: white;
+  .image2 {
+    display: block;
+    width: 335px;
+    height: 225px;
+    margin-bottom: 20px;
   }
+  .image2 img {
+    border-radius: 10px;
+  }
+  .image1 {
+    display: none;
+  }
+}
+@media screen and (max-width: 767px) {
+  .container {
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+  .about {
+    margin-bottom: 10rem;
+  }
+  .titleContainer {
+    flex-direction: column;
+    align-items: center;
+  }
+  .image2 {
+    display: block;
+    width: 300px;
+    height: 200px;
+    margin-bottom: 20px;
+  }
+  .image2 img {
+    border-radius: 10px;
+  }
+  .image1 {
+    display: none;
+  }
+  .aboutP .aboutPara {
+    /* padding-right: 2rem; */
+    margin-left: 0rem;
+
+    /* padding-bottom: 20px; */
+  }
+}
+@media screen and (max-width: 567px) {
+}

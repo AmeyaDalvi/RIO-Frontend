@@ -1,6 +1,7 @@
+import React from "react";
 import { Grid } from "@mui/material";
 // import { makeStyles } from "@mui/styles";
-import { LoginForm } from "./LoginForm";
+import { UpdatePassForm } from "./UpdatePassForm";
 import { Banner } from "../extras/Banner";
 // import UserContext from "../store/User-Context";
 import { useEffect, useState } from "react";
@@ -9,24 +10,7 @@ import { baseUrl } from "utils/baseUrl";
 import Testimonial from "components/extras/Testimonial";
 import { useRouter } from "next/router";
 
-// const useStyles = makeStyles((theme) => ({
-//   loginBanner: {
-//     background: "linear-gradient(180deg, #EA5DEB 0%, #832BE0 100%)",
-//     textShadow: "2px 2px 2px rgba(0,0,0,0.26)",
-//   },
-
-//   loginForm: {
-//     display: "flex",
-//     padding: "0",
-//     width: "100%",
-//     height: "calc(100vh - 66px)",
-//   },
-// }));
-
-export const Login = () => {
-  //   const classes = useStyles();
-  //   const userCtx = useContext(UserContext);
-  //   const navigate = useNavigate();
+export const UpdatePass = () => {
   const [invalidCredential, setInvalidCredential] = useState(false);
   const [responseError, setResponseError] = useState(false);
   const router = useRouter();
@@ -36,12 +20,12 @@ export const Login = () => {
     setResponseError(false);
   }, []);
 
-  const loginFormHandler = async (userData) => {
+  const updatePassFormHandler = async (userData) => {
     setInvalidCredential(false);
     setResponseError(false);
 
     try {
-      const response = await fetch(baseUrl + "/login", {
+      const response = await fetch(baseUrl + "/updatepass", {
         method: "POST",
         body: JSON.stringify(userData),
         headers: {
@@ -56,8 +40,8 @@ export const Login = () => {
         console.log(data.message);
 
         // userCtx.setUserData(data.response);
-        router.replace("/products");
-      } else if (response.status === 401) {
+        router.replace("/login");
+      } else if (response.status === 403) {
         setInvalidCredential(true);
       }
     } catch (error) {
@@ -75,7 +59,7 @@ export const Login = () => {
     >
       <Grid
         item
-        key="login-form"
+        key="forgot-form"
         md={5}
         sx={{
           display: "flex",
@@ -86,8 +70,8 @@ export const Login = () => {
           height: "calc(100vh + 10px)",
         }}
       >
-        <LoginForm
-          onLoginSubmit={loginFormHandler}
+        <UpdatePassForm
+          onUpdatePassFormSubmit={updatePassFormHandler}
           invalidError={invalidCredential}
           responseError={responseError}
         />

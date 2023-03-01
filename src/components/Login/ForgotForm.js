@@ -17,28 +17,31 @@ import Or from "components/extras/Or";
 import theme from "theme";
 import { useRouter } from "next/router";
 
-export const LoginForm = (props) => {
-  const [showPassword, setShowPassword] = useState(false);
+export const ForgotForm = (props) => {
   const [emailError, setEmailError] = useState(false);
-  const [passwordError, setPasswordError] = useState(false);
+  const [maidenError, setMaidenError] = useState(false);
+  const [artistError, setArtistError] = useState(false);
   const router = useRouter();
 
   const emailRef = useRef();
-  const passwordRef = useRef();
+  const maidenRef = useRef();
+  const artistRef = useRef();
 
   useEffect(() => {
-    setShowPassword(false);
     setEmailError(false);
-    setPasswordError(false);
+    setMaidenError(false);
+    setArtistError(false);
   }, []);
 
   const isInputError = () => {
     let errorFlag = false;
     const email = emailRef.current.value;
-    const password = passwordRef.current.value;
+    const maiden = maidenRef.current.value;
+    const artist = artistRef.current.value;
 
     setEmailError(false);
-    setPasswordError(false);
+    setMaidenError(false);
+    setArtistError(false);
 
     if (email === "") {
       errorFlag = true;
@@ -62,17 +65,16 @@ export const LoginForm = (props) => {
       setEmailError(true);
     }
 
-    if (password === "") {
+    if (maiden === "") {
       errorFlag = true;
-      setPasswordError(true);
-    } else if (
-      !/[a-z]/.test(password) ||
-      !/[A-Z]/.test(password) ||
-      !/[0-9]/.test(password)
-    ) {
-      errorFlag = true;
-      setPasswordError(true);
+      setMaidenError(true);
     }
+
+    if (artist === "") {
+      errorFlag = true;
+      setArtistError(true);
+    }
+
     return errorFlag;
   };
 
@@ -83,21 +85,15 @@ export const LoginForm = (props) => {
     if (!isError) {
       const userData = {
         emailId: emailRef.current.value,
-        password: passwordRef.current.value,
+        maidenName: maidenRef.current.value,
+        artistName: artistRef.current.value,
       };
       setEmailError(false);
-      setPasswordError(false);
+      setMaidenError(false);
+      setArtistError(false);
 
-      props.onLoginSubmit(userData);
+      props.onForgotFormSubmit(userData);
     }
-  };
-
-  const handleClickShowPassword = () => {
-    setShowPassword((prev) => !prev);
-  };
-
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
   };
 
   return (
@@ -110,7 +106,7 @@ export const LoginForm = (props) => {
         width: "100%",
       }}
     >
-      <h1>Login</h1>
+      <h1>Forgot Password</h1>
 
       {props.invalidError && (
         <Alert severity="error">Please enter valid credentials!</Alert>
@@ -128,8 +124,6 @@ export const LoginForm = (props) => {
           mt={2}
           px={6}
         >
-          <GoogleLog />
-          <Or />
           <Stack justifyContent="center" alignItems="center" spacing={2}>
             <TextField
               sx={{
@@ -141,7 +135,7 @@ export const LoginForm = (props) => {
                 },
               }}
               required
-              id="outlined-required3"
+              id="outlined-required1"
               label="Email Id"
               fullWidth
               variant="filled"
@@ -164,48 +158,46 @@ export const LoginForm = (props) => {
                   borderBottomColor: "#000",
                 },
               }}
-              id="outlined-adornment-password"
-              type={showPassword ? "text" : "password"}
-              label="Password *"
-              variant="filled"
+              required
+              id="outlined-required2"
+              label="What is your Mother's Maiden Name?"
               fullWidth
-              className={theme.inputText}
-              InputProps={{
+              variant="filled"
+              inputProps={{
                 autoComplete: "new-password",
                 form: {
                   autoComplete: "off",
                 },
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
-                      {showPassword ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
               }}
-              error={passwordError}
-              helperText={passwordError && "Incorrect Entry."}
-              inputRef={passwordRef}
+              error={maidenError}
+              helperText={maidenError && "Incorrect Entry."}
+              inputRef={maidenRef}
+            />
+            <TextField
+              sx={{
+                "& label.Mui-focused": {
+                  color: "#000",
+                },
+                "& .MuiFilledInput-underline:after": {
+                  borderBottomColor: "#000",
+                },
+              }}
+              required
+              id="outlined-required3"
+              label="Who is your favorite artist?"
+              fullWidth
+              variant="filled"
+              inputProps={{
+                autoComplete: "new-password",
+                form: {
+                  autoComplete: "off",
+                },
+              }}
+              error={artistError}
+              helperText={artistError && "Incorrect Entry."}
+              inputRef={artistRef}
             />
           </Stack>
-          <Box sx={{ paddingTop: "1rem", textAlign: "right" }}>
-            <Typography
-              onClick={() => router.push("/forgotpass")}
-              variant="h7"
-              sx={{
-                fontWeight: "bold",
-                color: "#275F69",
-                cursor: "pointer",
-              }}
-            >
-              Forgot Password?
-            </Typography>
-          </Box>
 
           <Box
             mt={6}
@@ -227,23 +219,11 @@ export const LoginForm = (props) => {
                 fontWeight: "bold !important",
               }}
             >
-              Log In
+              Submit
             </Button>
           </Box>
         </Box>
       </Container>
-      <Stack direction="row" spacing={1} mt={4}>
-        <Typography variant="h6" sx={{ fontWeight: "regular" }}>
-          Not registered yet?
-        </Typography>
-        <Typography
-          onClick={() => router.replace("/signup")}
-          variant="h6"
-          sx={{ fontWeight: "bold", color: "#275F69", cursor: "pointer" }}
-        >
-          Get Started
-        </Typography>
-      </Stack>
     </Box>
   );
 };

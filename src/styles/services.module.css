@@ -1,10 +1,18 @@
 .container {
-    padding: 0 2rem;
-    display: flex;
-    max-width: 1024px;
-    border: 2px solid red;
-    margin: 0 auto;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;}
+  padding: 0 2rem;
+  display: flex;
+  max-width: 1024px;
+  border: 2px solid red;
+  margin: 0 auto;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+}
+
+@media screen and (max-width: 767px) {
+  .container {
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+}
