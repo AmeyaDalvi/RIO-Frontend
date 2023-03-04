@@ -19,11 +19,6 @@ export default function MyApp(props) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
   const CLIENT_ID =
     "930249676289-2mrshjktbiu7s9uks2junt3e5qp7ognb.apps.googleusercontent.com";
-  const router = useRouter();
-  const showHeader =
-    router.pathname === "/login" || router.pathname === "/signup"
-      ? false
-      : true;
 
   return (
     <Layout>
@@ -36,7 +31,6 @@ export default function MyApp(props) {
           <CssBaseline />
 
           <GoogleOAuthProvider clientId={CLIENT_ID}>
-            {showHeader && <Navbar />}
             <Component {...pageProps} />
           </GoogleOAuthProvider>
         </ThemeProvider>

@@ -1,6 +1,6 @@
 import { Grid } from "@mui/material";
 // import { makeStyles } from "@mui/styles";
-import { LoginForm } from "./LoginForm";
+import { ForgotForm } from "./ForgotForm";
 import { Banner } from "../extras/Banner";
 // import UserContext from "../store/User-Context";
 import { useEffect, useState } from "react";
@@ -23,7 +23,7 @@ import { useRouter } from "next/router";
 //   },
 // }));
 
-export const Login = () => {
+export const ForgotPass = () => {
   //   const classes = useStyles();
   //   const userCtx = useContext(UserContext);
   //   const navigate = useNavigate();
@@ -36,12 +36,12 @@ export const Login = () => {
     setResponseError(false);
   }, []);
 
-  const loginFormHandler = async (userData) => {
+  const forgotFormHandler = async (userData) => {
     setInvalidCredential(false);
     setResponseError(false);
 
     try {
-      const response = await fetch(baseUrl + "/login", {
+      const response = await fetch(baseUrl + "/forgot", {
         method: "POST",
         body: JSON.stringify(userData),
         headers: {
@@ -56,8 +56,8 @@ export const Login = () => {
         console.log(data.message);
 
         // userCtx.setUserData(data.response);
-        router.replace("/products");
-      } else if (response.status === 401) {
+        router.push("/updatepass");
+      } else if (response.status === 403) {
         setInvalidCredential(true);
       }
     } catch (error) {
@@ -75,7 +75,7 @@ export const Login = () => {
     >
       <Grid
         item
-        key="login-form"
+        key="forgot-form"
         md={5}
         sx={{
           display: "flex",
@@ -86,8 +86,8 @@ export const Login = () => {
           height: "calc(100vh + 10px)",
         }}
       >
-        <LoginForm
-          onLoginSubmit={loginFormHandler}
+        <ForgotForm
+          onForgotFormSubmit={forgotFormHandler}
           invalidError={invalidCredential}
           responseError={responseError}
         />

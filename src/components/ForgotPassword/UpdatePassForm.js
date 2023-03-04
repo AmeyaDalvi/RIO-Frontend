@@ -8,72 +8,71 @@ import {
   Typography,
   Alert,
 } from "@mui/material";
+import React from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button, TextField } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import { useState, useRef, useEffect } from "react";
-import GoogleLog from "./GoogleLog";
-import Or from "components/extras/Or";
-import theme from "theme";
 import { useRouter } from "next/router";
-// import axios from "axios";
 
-export const LoginForm = (props) => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [emailError, setEmailError] = useState(false);
-  const [passwordError, setPasswordError] = useState(false);
+export const UpdatePassForm = (props) => {
+  const [newPassError, setNewPassError] = useState(false);
+  const [confirmPassError, setConfirmPassError] = useState(false);
+  const [dontMatchError, setDontMatchError] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const router = useRouter();
 
-  const emailRef = useRef();
-  const passwordRef = useRef();
+  const newPassRef = useRef();
+  const confirmPassRef = useRef();
 
   useEffect(() => {
-    setShowPassword(false);
-    setEmailError(false);
-    setPasswordError(false);
+    setShowNewPassword(false);
+    setShowConfirmPassword(false);
+    setNewPassError(false);
+    setConfirmPassError(false);
+    setDontMatchError(false);
   }, []);
 
   const isInputError = () => {
     let errorFlag = false;
-    const email = emailRef.current.value;
-    const password = passwordRef.current.value;
+    const newpass = newPassRef.current.value;
+    const confirmpass = confirmPassRef.current.value;
 
-    setEmailError(false);
-    setPasswordError(false);
+    setShowNewPassword(false);
+    setShowConfirmPassword(false);
+    setNewPassError(false);
+    setConfirmPassError(false);
+    setDontMatchError(false);
 
-    if (email === "") {
+    if (newpass === "") {
       errorFlag = true;
-      setEmailError(true);
+      setNewPassError(true);
     } else if (
-      (email.match(/@/g) || []).length !== 1 ||
-      (email.match(/\./g) || []).length < 1
+      !/[a-z]/.test(newpass) ||
+      !/[A-Z]/.test(newpass) ||
+      !/[0-9]/.test(newpass)
     ) {
       errorFlag = true;
-      setEmailError(true);
-    } else if (
-      email.indexOf(".") === 0 ||
-      email.indexOf("@") === 0 ||
-      email.indexOf("-") === 0 ||
-      email.indexOf("_") === 0
-    ) {
-      errorFlag = true;
-      setEmailError(true);
-    } else if (/[^a-zA-Z0-9.@_-]/.test(email)) {
-      errorFlag = true;
-      setEmailError(true);
+      setNewPassError(true);
     }
 
-    if (password === "") {
+    if (confirmpass === "") {
       errorFlag = true;
-      setPasswordError(true);
+      setConfirmPassError(true);
     } else if (
-      !/[a-z]/.test(password) ||
-      !/[A-Z]/.test(password) ||
-      !/[0-9]/.test(password)
+      !/[a-z]/.test(confirmpass) ||
+      !/[A-Z]/.test(confirmpass) ||
+      !/[0-9]/.test(confirmpass)
     ) {
       errorFlag = true;
-      setPasswordError(true);
+      setConfirmPassError(true);
+    } else if (confirmpass !== newpass) {
+      errorFlag = true;
+      setDontMatchError(true);
     }
+
     return errorFlag;
   };
 
@@ -83,31 +82,27 @@ export const LoginForm = (props) => {
 
     if (!isError) {
       const userData = {
-        emailId: emailRef.current.value,
-        password: passwordRef.current.value,
+        newpass: newPassRef.current.value,
+        confirmpass: confirmPassRef.current.value,
       };
-      setEmailError(false);
-      setPasswordError(false);
+      setNewPassError(false);
+      setConfirmPassError(false);
+      setShowNewPassword(false);
+      setShowConfirmPassword(false);
+      setDontMatchError(false);
 
-      props.onLoginSubmit(userData);
-
-      // axios.put(
-      //   'https://api.chatengine.io/users/',
-      //   {"username" : "dummy", "secret" : "dummy"},
-      //   {headers: {"Private-key": '4d50e251-748f-49e2-8d84-7c8adec36be0'}}
-      // )
-      // .then(r => router.push('/chat'))
+      props.onUpdatePassFormSubmit(userData);
     }
   };
-
-  const handleClickShowPassword = () => {
-    setShowPassword((prev) => !prev);
+  const handleClickShowNewPassword = () => {
+    setShowNewPassword((prev) => !prev);
   };
-
+  const handleClickShowConfirmPassword = () => {
+    setShowConfirmPassword((prev) => !prev);
+  };
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-
   return (
     <Box
       sx={{
@@ -118,7 +113,7 @@ export const LoginForm = (props) => {
         width: "100%",
       }}
     >
-      <h1>Login</h1>
+      <h1>Update Password</h1>
 
       {props.invalidError && (
         <Alert severity="error">Please enter valid credentials!</Alert>
@@ -136,10 +131,9 @@ export const LoginForm = (props) => {
           mt={2}
           px={6}
         >
-          <GoogleLog />
-          <Or />
           <Stack justifyContent="center" alignItems="center" spacing={2}>
             <TextField
+              // className={passwordError ? classes.errorText : classes.inpuText}
               sx={{
                 "& label.Mui-focused": {
                   color: "#000",
@@ -148,36 +142,11 @@ export const LoginForm = (props) => {
                   borderBottomColor: "#000",
                 },
               }}
-              required
-              id="outlined-required3"
-              label="Email Id"
-              fullWidth
-              variant="filled"
-              inputProps={{
-                autoComplete: "new-password",
-                form: {
-                  autoComplete: "off",
-                },
-              }}
-              error={emailError}
-              helperText={emailError && "Incorrect Entry."}
-              inputRef={emailRef}
-            />
-            <TextField
-              sx={{
-                "& label.Mui-focused": {
-                  color: "#000",
-                },
-                "& .MuiFilledInput-underline:after": {
-                  borderBottomColor: "#000",
-                },
-              }}
-              id="outlined-adornment-password"
-              type={showPassword ? "text" : "password"}
-              label="Password *"
+              id="outlined-adornment-password1"
+              type={showNewPassword ? "text" : "password"}
+              label="New Password *"
               variant="filled"
               fullWidth
-              className={theme.inputText}
               InputProps={{
                 autoComplete: "new-password",
                 form: {
@@ -187,33 +156,60 @@ export const LoginForm = (props) => {
                   <InputAdornment position="end">
                     <IconButton
                       aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
+                      onClick={handleClickShowNewPassword}
                       onMouseDown={handleMouseDownPassword}
                       edge="end"
                     >
-                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                      {showNewPassword ? <Visibility /> : <VisibilityOff />}
                     </IconButton>
                   </InputAdornment>
                 ),
               }}
-              error={passwordError}
-              helperText={passwordError && "Incorrect Entry."}
-              inputRef={passwordRef}
+              error={newPassError}
+              helperText={newPassError && "Must Contain (a-z, A-z, 0-9)"}
+              inputRef={newPassRef}
+            />
+            <TextField
+              // className={passwordError ? classes.errorText : classes.inpuText}
+              sx={{
+                "& label.Mui-focused": {
+                  color: "#000",
+                },
+                "& .MuiFilledInput-underline:after": {
+                  borderBottomColor: "#000",
+                },
+              }}
+              id="outlined-adornment-password2"
+              type={showConfirmPassword ? "text" : "password"}
+              label="Confirm Password *"
+              variant="filled"
+              fullWidth
+              InputProps={{
+                autoComplete: "new-password",
+                form: {
+                  autoComplete: "off",
+                },
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowConfirmPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showConfirmPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              error={confirmPassError || dontMatchError}
+              helperText={
+                (confirmPassError && "Must Contain (a-z, A-z, 0-9)") ||
+                (dontMatchError && "Password doesn't match")
+              }
+              inputRef={confirmPassRef}
             />
           </Stack>
-          <Box sx={{ paddingTop: "1rem", textAlign: "right" }}>
-            <Typography
-              onClick={() => router.push("/forgotpass")}
-              variant="h7"
-              sx={{
-                fontWeight: "bold",
-                color: "#275F69",
-                cursor: "pointer",
-              }}
-            >
-              Forgot Password?
-            </Typography>
-          </Box>
 
           <Box
             mt={6}
@@ -235,23 +231,11 @@ export const LoginForm = (props) => {
                 fontWeight: "bold !important",
               }}
             >
-              Log In
+              Submit
             </Button>
           </Box>
         </Box>
       </Container>
-      <Stack direction="row" spacing={1} mt={4}>
-        <Typography variant="h6" sx={{ fontWeight: "regular" }}>
-          Not registered yet?
-        </Typography>
-        <Typography
-          onClick={() => router.replace("/signup")}
-          variant="h6"
-          sx={{ fontWeight: "bold", color: "#275F69", cursor: "pointer" }}
-        >
-          Get Started
-        </Typography>
-      </Stack>
     </Box>
   );
 };
