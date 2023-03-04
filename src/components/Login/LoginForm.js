@@ -16,7 +16,7 @@ import GoogleLog from "./GoogleLog";
 import Or from "components/extras/Or";
 import theme from "theme";
 import { useRouter } from "next/router";
-import axios from "axios";
+// import axios from "axios";
 
 export const LoginForm = (props) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -91,12 +91,12 @@ export const LoginForm = (props) => {
 
       props.onLoginSubmit(userData);
 
-      axios.put(
-        'https://api.chatengine.io/users/',
-        {"username" : "dummy", "secret" : "dummy"},
-        {headers: {"Private-key": '4d50e251-748f-49e2-8d84-7c8adec36be0'}}
-      )
-      .then(r => router.push('/chat'))
+      // axios.put(
+      //   'https://api.chatengine.io/users/',
+      //   {"username" : "dummy", "secret" : "dummy"},
+      //   {headers: {"Private-key": '4d50e251-748f-49e2-8d84-7c8adec36be0'}}
+      // )
+      // .then(r => router.push('/chat'))
     }
   };
 
