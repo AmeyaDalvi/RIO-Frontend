@@ -83,7 +83,12 @@ import { Link } from "@mui/material";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 
-const pages = ["Home", "Products", "Services", "About Us"];
+const pages = [
+  { name: "Home", link: "/" },
+  { name: "Products", link: "/products" },
+  { name: "Services", link: "/" },
+  { name: "About Us", link: "/" },
+];
 const login = "Login";
 const settings = ["Profile", "Account", "Dashboard"];
 
@@ -125,7 +130,11 @@ function ResponsiveAppBar() {
     >
       <Container maxWidth="lg">
         <Toolbar sx={{ padding: "0px !important" }}>
-          <Box>
+          <Box
+            onClick={() => {
+              router.push("/");
+            }}
+          >
             <Link
               href="/"
               style={{ textDecoration: "none", marginBottom: "-5px" }}
@@ -165,9 +174,15 @@ function ResponsiveAppBar() {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                <MenuItem
+                  key={page}
+                  onClick={() => {
+                    router.push(page.link);
+                    handleCloseNavMenu();
+                  }}
+                >
                   <Typography textAlign="center" sx={{ my: 2, color: "black" }}>
-                    {page}
+                    {page.name}
                   </Typography>
                 </MenuItem>
               ))}
@@ -191,7 +206,10 @@ function ResponsiveAppBar() {
             {pages.map((page) => (
               <Button
                 key={page}
-                onClick={handleCloseNavMenu}
+                onClick={() => {
+                  router.push(page.link);
+                  handleCloseNavMenu();
+                }}
                 sx={{
                   ml: 2,
                   display: "block",
@@ -203,7 +221,7 @@ function ResponsiveAppBar() {
                   },
                 }}
               >
-                {page}
+                {page.name}
               </Button>
             ))}
           </Box>

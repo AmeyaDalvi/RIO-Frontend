@@ -56,7 +56,10 @@ export const ForgotPass = () => {
         console.log(data.message);
 
         // userCtx.setUserData(data.response);
-        router.push("/updatepass");
+        router.push({
+          pathname: "/updatepass",
+          query: { emailId: userData.emailId },
+        });
       } else if (response.status === 403) {
         setInvalidCredential(true);
       }

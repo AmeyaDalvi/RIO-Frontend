@@ -1,7 +1,6 @@
 import React from "react";
 import footerstyles from "../../styles/footer.module.css";
 
-
 const Footer = () => {
   return (
     <footer className={footerstyles.footer}>
@@ -10,13 +9,13 @@ const Footer = () => {
           <h3>Useful Links</h3>
           <ul>
             <li>
-              <a href="/privacy-policy">Privacy Policy</a>
+              <a href="privacy-policy">Privacy Policy</a>
             </li>
             <li>
-              <a href="/terms-of-use">Terms of Use</a>
+              <a href="terms-of-use">Terms of Use</a>
             </li>
             <li>
-              <a href="/return-policy">Return Policy</a>
+              <a href="return-policy">Return Policy</a>
             </li>
           </ul>
         </div>
@@ -24,13 +23,13 @@ const Footer = () => {
           <h3>Company</h3>
           <ul>
             <li>
-              <a href="/about-us">About Us</a>
+              <a href="about-us">About Us</a>
             </li>
             <li>
-              <a href="/contact-us">Contact Us</a>
+              <a href="contact-us">Contact Us</a>
             </li>
             <li>
-              <a href="/careers">Careers</a>
+              <a href="careers">Careers</a>
             </li>
           </ul>
         </div>
@@ -60,8 +59,9 @@ const Footer = () => {
           </ul>
         </div>
       </div>
-      <p style={{ color: 'white', textAlign: 'center', fontSize: '14rme' }}>
-        Made with <span style={{ color: 'red' }}>&#x2764;</span> Team 16 RIO - SE Spring 2023
+      <p style={{ color: "white", textAlign: "center", fontSize: "14rme" }}>
+        Made with <span style={{ color: "red" }}>&#x2764;</span> Team 16 RIO -
+        SE Spring 2023
       </p>
     </footer>
   );
