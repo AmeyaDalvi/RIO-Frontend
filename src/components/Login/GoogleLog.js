@@ -4,6 +4,7 @@ import styles from "../../styles/google.module.css";
 import { baseUrl } from "utils/baseUrl";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import Cookies from "js-cookie";
 
 const GoogleLog = () => {
   const router = useRouter();
@@ -18,10 +19,13 @@ const GoogleLog = () => {
       });
 
       if (response.status === 200) {
+        const data = await response.json();
+        Cookies.set("rioUser", JSON.stringify(data.response));
+        Cookies.set("rioUserToken", JSON.stringify(data.token));
         router.replace("/products");
       }
     } catch (error) {
-      // console.log(error);
+      console.log(error);
     }
   };
   return (

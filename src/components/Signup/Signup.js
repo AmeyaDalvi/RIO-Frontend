@@ -7,14 +7,17 @@ import { useEffect, useState } from "react";
 import { baseUrl } from "utils/baseUrl";
 import Testimonial from "components/extras/Testimonial";
 import { useRouter } from "next/router";
+import Cookies from "js-cookie";
 
 export const Signup = () => {
   //   const userCtx = useContext(UserContext);
   const router = useRouter();
   const [responseError, setResponseError] = useState(false);
+  const [alreadyExistsError, setAlreadyExistsError] = useState(false);
 
   useEffect(() => {
     setResponseError(false);
+    setAlreadyExistsError(false);
   }, []);
 
   const signupFormHandler = async (userData) => {
@@ -29,14 +32,11 @@ export const Signup = () => {
 
       if (response.status === 200) {
         const data = await response.json();
-        localStorage.setItem("rioUser", JSON.stringify(data.response));
-        localStorage.setItem("token", data.token);
-
-        // userCtx.setUserData(data.response);
-        // const data1 = JSON.parse(localStorage.getItem("readifyUser"));
+        Cookies.set("rioUser", JSON.stringify(data.response));
+        Cookies.set("rioUserToken", JSON.stringify(data.token));
         router.replace("/products");
-      } else if (response.status === 401) {
-        setResponseError(true);
+      } else if (response.status === 403) {
+        setAlreadyExistsError(true);
       }
     } catch (error) {
       console.log(error);
@@ -66,6 +66,7 @@ export const Signup = () => {
         <SignupForm
           onSignUpSubmit={signupFormHandler}
           responseError={responseError}
+          alreadyExistsError={alreadyExistsError}
         />
       </Grid>
       <Grid

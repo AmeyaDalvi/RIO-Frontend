@@ -116,7 +116,7 @@ export const LoginForm = (props) => {
         <Alert severity="error">Please enter valid credentials!</Alert>
       )}
       {props.responseError && (
-        <Alert severity="error">There was some error. Try again!</Alert>
+        <Alert severity="error">You haven't signed up!</Alert>
       )}
 
       <Container maxWidth="sm">

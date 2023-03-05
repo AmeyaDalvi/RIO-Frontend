@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { baseUrl } from "utils/baseUrl";
 import Testimonial from "components/extras/Testimonial";
 import { useRouter } from "next/router";
+import Cookies from "js-cookie";
 
 // const useStyles = makeStyles((theme) => ({
 //   loginBanner: {
@@ -51,14 +52,14 @@ export const Login = () => {
 
       if (response.status === 200) {
         const data = await response.json();
-        // localStorage.setItem("rioUser", JSON.stringify(data.response));
-        // localStorage.setItem("token", data.token);
         console.log(data.message);
-
-        // userCtx.setUserData(data.response);
+        Cookies.set("rioUser", JSON.stringify(data.response));
+        Cookies.set("rioUserToken", JSON.stringify(data.token));
         router.replace("/products");
       } else if (response.status === 401) {
         setInvalidCredential(true);
+      } else if (response.status === 403) {
+        setResponseError(true);
       }
     } catch (error) {
       console.log(error);

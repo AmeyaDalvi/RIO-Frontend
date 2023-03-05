@@ -80,13 +80,17 @@ import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import Image from "next/image";
 import { Link } from "@mui/material";
+import Cookies from "js-cookie";
+import { useRouter } from "next/router";
 
 const pages = ["Home", "Products", "Services", "About Us"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const login = "Login";
+const settings = ["Profile", "Account", "Dashboard"];
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
+  const router = useRouter();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -103,6 +107,12 @@ function ResponsiveAppBar() {
     setAnchorElUser(null);
   };
 
+  const logoutHandler = () => {
+    Cookies.remove("rioUser");
+    Cookies.remove("rioUserToken");
+    router.replace("/");
+  };
+
   return (
     <AppBar
       position="sticky"
@@ -115,7 +125,6 @@ function ResponsiveAppBar() {
     >
       <Container maxWidth="lg">
         <Toolbar sx={{ padding: "0px !important" }}>
-          {/* <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} /> */}
           <Box>
             <Link
               href="/"
@@ -176,7 +185,7 @@ function ResponsiveAppBar() {
               flexGrow: 1,
               display: { xs: "none", md: "flex" },
               justifyContent: "flex-end",
-              mr: 7,
+              // mr: 7,
             }}
           >
             {pages.map((page) => (
@@ -199,35 +208,57 @@ function ResponsiveAppBar() {
             ))}
           </Box>
 
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: "45px" }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
+          {!Cookies.get("rioUserToken") ? (
+            <Button
+              key={login}
+              onClick={() => router.push("/login")}
+              sx={{
+                ml: 2,
+                display: "block",
+                color: "black",
+                fontWeight: "400",
+                ":hover": {
+                  background: "black",
+                  color: "white",
+                },
               }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+              {login}
+            </Button>
+          ) : (
+            <Box sx={{ flexGrow: 0, ml: 7 }}>
+              <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                </IconButton>
+              </Tooltip>
+              <Menu
+                sx={{ mt: "45px" }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                {settings.map((setting) => (
+                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                    <Typography textAlign="center">{setting}</Typography>
+                  </MenuItem>
+                ))}
+                <MenuItem key="logout" onClick={logoutHandler}>
+                  <Typography textAlign="center">Logout</Typography>
                 </MenuItem>
-              ))}
-            </Menu>
-          </Box>
+              </Menu>
+            </Box>
+          )}
         </Toolbar>
       </Container>
     </AppBar>

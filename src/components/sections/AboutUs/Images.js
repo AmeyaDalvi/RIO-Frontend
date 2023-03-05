@@ -27,6 +27,7 @@ const Images = () => {
               justifyContent: "center",
             }}
             p={1}
+            key={item.fname}
           >
             <ImageItem fname={item.fname} lname={item.lname} img={item.img} />
           </Grid>
