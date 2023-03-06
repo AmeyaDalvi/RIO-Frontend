@@ -165,7 +165,13 @@ export const SignupForm = (props) => {
     >
       <h1>Sign Up</h1>
       {props.responseError && (
-        <Alert severity="error">There was some error. Try again!</Alert>
+        <Alert severity="error">There was some error, Try again!</Alert>
+      )}
+      {props.alreadyExistsError && (
+        <Alert severity="error">
+          Account already exists! Check If you have previously signed in with
+          Google.
+        </Alert>
       )}
       <Container maxWidth="sm">
         <Box

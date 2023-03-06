@@ -23,6 +23,7 @@ export const UpdatePassForm = (props) => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const router = useRouter();
+  const emailId = router.query.emailId;
 
   const newPassRef = useRef();
   const confirmPassRef = useRef();
@@ -82,6 +83,7 @@ export const UpdatePassForm = (props) => {
 
     if (!isError) {
       const userData = {
+        emailId: emailId,
         newpass: newPassRef.current.value,
         confirmpass: confirmPassRef.current.value,
       };
