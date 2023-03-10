@@ -10,13 +10,13 @@ export default function Services() {
   return (
     <div className={styles.container}>
       <SectionHeading heading="Services" />
-    <Grid
-      sx={{
+      <Grid
+        sx={{
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
         }}
-      container
+        container
       >
         {[0, 1, 2, 3].map((item) => (
           <Grid
@@ -30,12 +30,14 @@ export default function Services() {
               justifyContent: "center",
             }}
             p={1}
-            key={item.fname}
-      >
-            <Card variant="outlined"  style={{minWidth: 115,  height: 200}} >{<ServiceCard />}</Card>
+            key={item}
+          >
+            <Card variant="outlined" style={{ minWidth: 115, height: 200 }}>
+              {<ServiceCard />}
+            </Card>
           </Grid>
         ))}
-    </Grid>
+      </Grid>
     </div>
   );
 }
