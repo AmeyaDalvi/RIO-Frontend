@@ -1,0 +1,63 @@
+.Text{
+    font-size: 80px;
+    font-weight: 510;
+    display: flex;
+    padding-right: 50px;
+    white-space: pre-wrap;
+}
+
+.ExploreButton{
+    border-radius: 29px;
+    border: 3px solid black;
+    width: fit-content;
+    padding: 20px;
+    font-weight: 600;
+    cursor: pointer;
+} 
+
+.Landing{
+    height: 100vh;
+    display: flex;
+    justify-content: space-between;
+}
+.leftPane{
+    margin:1%;
+    padding:50px;
+    max-width: 60%;
+}
+@media screen and (min-width: 1200px){
+
+}
+@media screen and (min-width: 1024px) and (max-width: 1199px){
+
+}
+
+@media screen and (max-width: 1023px){
+    .Image{
+        display: none;
+    }
+    .Text{
+        font-size: 40px;
+        font-weight: 510;
+        display: flex;
+        padding-right: 50px;
+        white-space: pre-wrap;
+    }
+    .leftPane{
+        margin:1%;
+        padding:50px;
+        
+    }
+}
+@media screen and (min-width: 768px) and (max-width: 1023px){
+
+}
+@media screen and (max-width: 767px) {
+    .Image{
+        display: none;
+        width:50px
+    }
+}
+@media screen and (max-width: 567px){
+
+}
