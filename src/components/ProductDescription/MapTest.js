@@ -1,41 +1,50 @@
 import ReactMapGL from "react-map-gl";
+import Map, { Marker } from "react-map-gl";
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 // import Container from "@mui/material/Container";
-import MapBoxGL, { Marker } from "react-map-gl";
+// import MapBoxGL, { Marker } from "react-map-gl";
+import "mapbox-gl/dist/mapbox-gl.css";
 
-export default function Map({ locations }) {
-    const [viewport, setViewport] = useState({
-        width: "100%",
-        height: "100%",
-        // The latitude and longitude of the center of London
-        latitude: 51.5074,
-        longitude: -0.1278,
-        pitch: 0,
-        zoom: 10
-    });
+export default function MapTest({ locations }) {
+    const [viewport, setViewport] = useState({});
+    useEffect(() => {
+            setViewport({
+                ...viewport,
+                latitude: 51.5074,
+                longitude: -0.1278,
+                zoom: 3.5,
+            });
+        
+    }, []);
 
     return(
-        <ReactMapGL
-            mapStyle="mapbox://styles/mapbox/streets-v11"
-            mapboxApiAccessToken="pk.eyJ1IjoiYXBlZG5layIsImEiOiJjbGZhY3VsbnIwNGF5M3hudzM5YTc3Zm9hIn0.rfcNbP6L2O0ijcc1smkXAg"
-            {...viewport}
-            onViewportChange={(nextViewport) => setViewport(nextViewport)}
+        <div>
+                {viewport.latitude && viewport.longitude && (
+        <Map
+        mapboxAccessToken="pk.eyJ1IjoiYXBlZG5layIsImEiOiJjbGZhY3VsbnIwNGF5M3hudzM5YTc3Zm9hIn0.rfcNbP6L2O0ijcc1smkXAg"
+        initialViewState={viewport}
+        mapStyle="mapbox://styles/mapbox/streets-v12"
         >
         {locations.map((location) => (
-            <div key={location.id}>
-                {console.log(locations)}
+             <div key={location.id}>
+                {/* {console.log(location[0].center[0] + " heyy")} */}
+                {/* {console.log(location.center[1])} */}
                 <Marker
                     latitude={location.center[1]}
                     longitude={location.center[0]}
-                    offsetLeft={-20}
-                    offsetTop={-10}>
-                    <span role="img" aria-label="push-pin">📌</span>
+                    // offsetLeft={-20}
+                    // offsetTop={-10}>
+                    >
+                    {/* <span role="img" aria-label="push-pin">📌</span> */}
                 </Marker>
-            </div>
-        ))}
-        </ReactMapGL>
+             </div>
+         ))}
+        </Map>
+        )}
+        </div>
         );
+
 }
 
 
