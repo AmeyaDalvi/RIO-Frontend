@@ -1,12 +1,12 @@
 import React from "react";
+import Filter from "components/Filter/Filter"
 
 const products = () => {
-  return (
-    <div>
-      products
-      <div>Hello</div>
-    </div>
-  );
+return (
+  <div>
+    <Filter/>
+ </div>
+ );
 };
-
 export default products;
+

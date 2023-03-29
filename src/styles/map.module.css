@@ -1,0 +1,10 @@
+.container {
+    padding: 0 0rem;
+    display: flex;
+    max-width: 1024px;
+    /* border: 2px solid red; */
+    flex-direction: column;
+    margin: 0 auto;
+    justify-self: center !important;
+    /* height: 90vh; */
+  }
