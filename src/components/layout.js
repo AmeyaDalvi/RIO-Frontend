@@ -1,8 +1,6 @@
 import React from "react";
-import { useState } from "react";
 import { useRouter } from "next/router";
 import Navbar from "components/Navbar/Navbar";
-//import { useInView } from "react-intersection-observer";
 
 const layout = ({ children }) => {
   const router = useRouter();

@@ -1,5 +1,4 @@
 import * as React from "react";
-//import Landing from "../components/sections/Landing";
 import Services from "../components/sections/Services";
 import AboutUs from "../components/sections/AboutUs";
 import Footer from "../components/sections/Footer";
