@@ -6,7 +6,7 @@ import CardContent from "@mui/material/CardContent";
 import dynamic from "next/dynamic";
 // import GM from "components/ProductDescription/GM";
 
-const GM = dynamic(() => import("components/ProductDescription/GM"), { ssr: false });
+const LocationMap = dynamic(() => import("components/ProductDescription/LocationMap"), { ssr: false });
 
 const url = "localhost:5000/getproduct"
 
@@ -56,7 +56,7 @@ export default function Description() {
                         </div>
                         {/* <GM location = "1600+Amphitheatre+Parkway,+Mountain+View,+CA,+94043"/> */}
                         {/* {/* <GM location = {product.SIStreet + ",+" + product.SICity + ",+" + product.SIState + ",+" + product.SIZip + ",+" + product.SICountry}>} */}
-                        <GM location = {product.SIStreet + " " + product.SICity + " " + product.SIState + " " + product.SIZip + " " + product.SICountry}/>
+                        <LocationMap location = {product.SIStreet + " " + product.SICity + " " + product.SIState + " " + product.SIZip + " " + product.SICountry}/>
                     </CardContent>
                 </Card>
             

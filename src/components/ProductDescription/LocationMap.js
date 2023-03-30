@@ -2,7 +2,7 @@ import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import { useState } from 'react';
 
 
-const GM = ({location}) => {
+const LocationMap = ({location}) => {
 
   const [map, setMap] = useState(null);
   // const [center, setCenter] = useState(null);
@@ -55,4 +55,4 @@ const GM = ({location}) => {
   );
 };
 
-export default GM;
+export default LocationMap;
