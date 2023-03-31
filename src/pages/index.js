@@ -3,6 +3,7 @@ import Landing from "../components/sections/Landing";
 import Services from "../components/sections/Services";
 import AboutUs from "../components/sections/AboutUs";
 import Footer from "../components/sections/Footer";
+import Chatbot from "../components/Chat/Chatbot"
 
 export default function Home() {
   return (
@@ -15,6 +16,7 @@ export default function Home() {
       <AboutUs />
       {/* <div className={styles.container}>Footer</div> */}
       <Footer />
+      <Chatbot/>
     </div>
   );
 }
