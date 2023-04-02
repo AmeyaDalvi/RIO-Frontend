@@ -2,6 +2,7 @@ import * as React from "react";
 import Services from "../components/sections/Services";
 import AboutUs from "../components/sections/AboutUs";
 import Footer from "../components/sections/Footer";
+import Chatbot from "../components/Chat/Chatbot"
 import Landing from "components/sections/Landing/Landing";
 
 export default function Home() {
@@ -15,6 +16,7 @@ export default function Home() {
       <AboutUs />
       {/* <div className={styles.container}>Footer</div> */}
       <Footer />
+      <Chatbot/>
     </div>
   );
 }
