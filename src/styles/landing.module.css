@@ -1,0 +1,88 @@
+.container {
+    padding: 0 2rem;
+    display: flex;
+    max-width: 1024px;
+    border: 2px solid red;
+    margin: 0 auto;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+}
+
+.Landing{
+    height: 100vh;
+    max-height: 50%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.leftPane{
+    margin:1%;
+    width: 150%;
+    overflow: hidden;
+    flex-wrap: wrap;
+    flex-direction: column;
+    display: flex;
+
+}  
+
+.Text{
+    font-size: 50px;
+    font-weight: 510;
+    display: flex;
+    padding-right: 50px;
+    white-space: pre-wrap;
+}
+
+.ExploreButton{
+    border-radius: 31px;
+    border: 3px solid black;
+    width: fit-content;
+    padding: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 50px;
+} 
+
+.Image{
+    width: 100px;
+}
+
+
+@media screen and (min-width: 1200px){
+
+}
+@media screen and (min-width: 1024px) and (max-width: 1199px){
+
+}
+
+@media screen and (max-width: 1023px){
+    .Image{
+        display: none;
+    }
+    .Text{
+        font-size: 40px;
+        font-weight: 510;
+        display: flex;
+        padding-right: 50px;
+        white-space: pre-wrap;
+    }
+    .leftPane{
+        margin:1%;
+        padding:50px;
+        
+    }
+}
+@media screen and (min-width: 768px) and (max-width: 1023px){
+
+}
+@media screen and (max-width: 767px) {
+    .Image{
+        display: none;
+        width:10%;
+    }
+}
+@media screen and (max-width: 567px){
+
+}

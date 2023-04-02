@@ -1,8 +1,6 @@
 import React from "react";
-import { useState } from "react";
 import { useRouter } from "next/router";
 import Navbar from "components/Navbar/Navbar";
-import { useInView } from "react-intersection-observer";
 
 const layout = ({ children }) => {
   const router = useRouter();
@@ -12,7 +10,7 @@ const layout = ({ children }) => {
     router.pathname === "/forgotpass" ||
     router.pathname === "/updatepass"
       ? false
-      : true;
+      : true; 
   return (
     <>
       {showHeader && <Navbar />}

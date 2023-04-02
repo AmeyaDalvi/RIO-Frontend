@@ -1,9 +1,9 @@
 import * as React from "react";
-import Landing from "../components/sections/Landing";
 import Services from "../components/sections/Services";
 import AboutUs from "../components/sections/AboutUs";
 import Footer from "../components/sections/Footer";
 import Chatbot from "../components/Chat/Chatbot"
+import Landing from "components/sections/Landing/Landing";
 
 export default function Home() {
   return (
