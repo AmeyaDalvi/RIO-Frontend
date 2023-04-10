@@ -11,6 +11,7 @@ import createEmotionCache from "../../src/createEmotionCache";
 import Navbar from "components/Navbar/Navbar";
 import { useRouter } from "next/router";
 import Layout from "components/layout";
+import { UserContextProvider } from "store/UserContext";
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -21,21 +22,26 @@ export default function MyApp(props) {
     "930249676289-2mrshjktbiu7s9uks2junt3e5qp7ognb.apps.googleusercontent.com";
 
   return (
-    <Layout>
-      <CacheProvider value={emotionCache}>
-        <Head>
-          <meta name="viewport" content="initial-scale=1, width=device-width" />
-        </Head>
-        <ThemeProvider theme={theme}>
-          {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-          <CssBaseline />
+    <UserContextProvider>
+      <Layout>
+        <CacheProvider value={emotionCache}>
+          <Head>
+            <meta
+              name="viewport"
+              content="initial-scale=1, width=device-width"
+            />
+          </Head>
+          <ThemeProvider theme={theme}>
+            {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+            <CssBaseline />
 
-          <GoogleOAuthProvider clientId={CLIENT_ID}>
-            <Component {...pageProps} />
-          </GoogleOAuthProvider>
-        </ThemeProvider>
-      </CacheProvider>
-    </Layout>
+            <GoogleOAuthProvider clientId={CLIENT_ID}>
+              <Component {...pageProps} />
+            </GoogleOAuthProvider>
+          </ThemeProvider>
+        </CacheProvider>
+      </Layout>
+    </UserContextProvider>
   );
 }
 

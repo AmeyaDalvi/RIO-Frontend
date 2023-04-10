@@ -60,8 +60,8 @@ function ResponsiveAppBar() {
       sx={{
         color: "#000",
         borderBottom: "0px solid #000",
-        background: "transparent",
-        backdropFilter: "blur(20px)",
+        background: "#fff",
+        // backdropFilter: "blur(20px)",
       }}
     >
       <Container maxWidth="lg">
