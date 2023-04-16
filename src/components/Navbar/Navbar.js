@@ -10,7 +10,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
+import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import Image from "next/image";
@@ -32,6 +32,52 @@ function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const router = useRouter();
+  const navbarPosition =
+    router.pathname === "/products" || router.pathname === "/products/[id]"
+      ? "absolute"
+      : "sticky";
+  let userInCookie = Cookies.get("rioUser");
+  userInCookie = userInCookie !== undefined ? JSON.parse(userInCookie) : null;
+  const tokenInCookie = Cookies.get("rioUserToken");
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const [isUser, setIsUser] = useState({});
+  const [clientWindowHeight, setClientWindowHeight] = useState("");
+  const [boxShadow, setBoxShadow] = useState(0);
+  const [backgroundTransparency, setBackgroundTransparency] = useState(0);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  });
+
+  useEffect(() => {
+    let backgroundTransparencyVar = clientWindowHeight / 600;
+
+    if (backgroundTransparencyVar < 1) {
+      let boxShadowVar = backgroundTransparencyVar * 0.1;
+      setBackgroundTransparency(backgroundTransparencyVar);
+
+      setBoxShadow(boxShadowVar);
+    }
+  }, [clientWindowHeight]);
+
+  useEffect(() => {
+    checkUserInCookie();
+  }, [tokenInCookie]);
+
+  const handleScroll = () => {
+    setClientWindowHeight(window.scrollY);
+  };
+
+  const checkUserInCookie = () => {
+    if (tokenInCookie) {
+      setIsUserLoggedIn(true);
+      setIsUser(userInCookie);
+    } else {
+      setIsUserLoggedIn(false);
+      setIsUser({});
+    }
+  };
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -56,12 +102,23 @@ function ResponsiveAppBar() {
 
   return (
     <AppBar
-      position="sticky"
+      position={navbarPosition}
       sx={{
         color: "#000",
         borderBottom: "0px solid #000",
-        background: "#fff",
-        // backdropFilter: "blur(20px)",
+        background:
+          navbarPosition === "sticky"
+            ? `rgba(250, 250, 250, ${backgroundTransparency})`
+            : "rgba(250, 250, 250, 1)",
+        boxShadow:
+          navbarPosition === "sticky"
+            ? `rgb(0 0 0 / ${boxShadow}) 0px 0px 20px 6px`
+            : "rgb(0 0 0 / 0.08) 0px 0px 20px 6px",
+
+        // boxShadow: "none",
+        // background: `rgba(250, 250, 250, ${backgroundTransparency})`,
+
+        transition: "all 0.5s ease",
       }}
     >
       <Container maxWidth="lg">
@@ -133,7 +190,7 @@ function ResponsiveAppBar() {
           <Link
             href="/"
             style={{ textDecoration: "none", marginBottom: "-5px" }}
-            sx={{ display: { xs: "flex", md: "none" }, mr: 2, flexGrow: 1 }}
+            sx={{ display: { xs: "flex", md: "none" }, ml: 5, flexGrow: 1 }}
           >
             <Image
               src="/images/rio.png"
@@ -174,7 +231,7 @@ function ResponsiveAppBar() {
             ))}
           </Box>
 
-          {!Cookies.get("rioUserToken") ? (
+          {!isUserLoggedIn ? (
             <Button
               key={login}
               onClick={() => router.push("/login")}
@@ -193,9 +250,18 @@ function ResponsiveAppBar() {
             </Button>
           ) : (
             <Box sx={{ flexGrow: 0, ml: 7 }}>
-              <Tooltip title="Open settings">
+              <Tooltip
+                title={isUser["first_name"] + " " + isUser["last_name"]}
+                maxWidth="15px"
+                arrow
+              >
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="images/rio.png" />
+                  <Avatar
+                    alt={isUser["first_name"]}
+                    src={
+                      isUser?.profile_pic ? isUser["profile_pic"] : "/images"
+                    }
+                  />
                 </IconButton>
               </Tooltip>
               <Menu
