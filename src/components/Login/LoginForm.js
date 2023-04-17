@@ -7,6 +7,8 @@ import {
   InputAdornment,
   Typography,
   Alert,
+  Divider,
+  Chip,
 } from "@mui/material";
 import { Button, TextField } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
@@ -137,7 +139,16 @@ export const LoginForm = (props) => {
           px={6}
         >
           <GoogleLog />
-          <Or />
+          <Divider
+            sx={{
+              my: "2rem",
+              "& .MuiDivider-root": {
+                backgroundColor: "#000",
+              },
+            }}
+          >
+            <Typography color="text.secondary">Or</Typography>
+          </Divider>
           <Stack justifyContent="center" alignItems="center" spacing={2}>
             <TextField
               sx={{

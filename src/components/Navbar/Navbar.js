@@ -252,7 +252,6 @@ function ResponsiveAppBar() {
             <Box sx={{ flexGrow: 0, ml: 7 }}>
               <Tooltip
                 title={isUser["first_name"] + " " + isUser["last_name"]}
-                maxWidth="15px"
                 arrow
               >
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>

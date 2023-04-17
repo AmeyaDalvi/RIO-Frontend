@@ -1,6 +1,8 @@
 import React from "react";
 import { useRouter } from "next/router";
 import Navbar from "components/Navbar/Navbar";
+import Chatbot from "../components/Chat/Chatbot";
+import AlanChat from "./Chat/AlanChat";
 
 const layout = ({ children }) => {
   const router = useRouter();
@@ -10,11 +12,14 @@ const layout = ({ children }) => {
     router.pathname === "/forgotpass" ||
     router.pathname === "/updatepass"
       ? false
-      : true; 
+      : true;
   return (
     <>
       {showHeader && <Navbar />}
+
       {children}
+      {/* <Chatbot /> */}
+      <AlanChat />
     </>
   );
 };

@@ -1,8 +1,9 @@
 .filter {
   /* border: 2px solid red; */
+  font: inherit;
   height: 30rem;
   padding: 1rem;
   border-radius: 15px;
   margin-top: 1rem;
-  box-shadow: 1px 1px 5px #888888;
+  box-shadow: rgb(0 0 0 / 0.06) 0px 0px 20px 6px;
 }

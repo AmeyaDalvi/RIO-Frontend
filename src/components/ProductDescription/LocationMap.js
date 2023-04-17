@@ -1,10 +1,12 @@
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
-import { useState } from "react";
+import { GoogleMap, LoadScript, Marker, MarkerF } from "@react-google-maps/api";
+import { useMemo, useState } from "react";
 
-const LocationMap = ({ location }) => {
+const LocationMap = ({ lat, lon }) => {
   const [map, setMap] = useState(null);
   // const [center, setCenter] = useState(null);
-  const center = { lat: 0.0, lng: 0.0 };
+  console.log("lat", lat);
+  console.log("lon", lon);
+  const mapCenter = { lat: Number(lat), lng: Number(lon) };
   console.log(location);
   const onLoad = (map) => {
     setMap(map);
@@ -15,19 +17,21 @@ const LocationMap = ({ location }) => {
     geocoder.geocode({ address: location }, (results, status) => {
       if (status === "OK") {
         // const { lat, lng } = results[0].geometry.location;
-        center.lat = results[0].geometry.location.lat();
-        center.lng = results[0].geometry.location.lng();
+        setLat(results[0].geometry.location.lat());
+        setLng(results[0].geometry.location.lng());
+        // center.lat = parseFloat();
+        // center.lng = parseFloat();
         // setCenter({ lat, lng });
         // console.log("hiiiii")
-        console.log(center.lat);
-        console.log(center.lng);
+        // console.log(center.lat);
+        // console.log(center.lng);
         // console.log("ayee")
         new google.maps.Marker({
-          position: center,
+          position: mapCenter,
           map,
         });
 
-        map.setCenter(center);
+        map.setCenter(mapCenter);
       } else {
         console.error(
           "Geocode was not successful for the following reason:",
@@ -39,20 +43,20 @@ const LocationMap = ({ location }) => {
   };
 
   return (
-    <div style={{ width: "100%", height: "500px" }}>
+    <div style={{ width: "100%", height: "300px" }}>
       <LoadScript
-        googleMapsApiKey="AIzaSyAp-O3TH6q8MwUykZeds32EyxW1twK7-t0"
-        onLoad={() => onLoad}
+        googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY}
+        // onLoad={() => onLoad}
       >
         <GoogleMap
           mapContainerStyle={{ width: "100%", height: "100%" }}
-          center={center && <Map center={center} />}
-          // center={center}
+          // center={center && <Map center={center} />}
+          center={mapCenter}
           zoom={20}
           onLoad={onLoad}
         >
-          <Marker position={center} />
-          {/* {center && <Marker position={center} />} */}
+          {/* <Marker position={center} /> */}
+          {<MarkerF position={mapCenter} />}
         </GoogleMap>
       </LoadScript>
     </div>
