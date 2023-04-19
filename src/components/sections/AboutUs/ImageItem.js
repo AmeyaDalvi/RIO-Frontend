@@ -13,6 +13,7 @@ export default function ActionAreaCard({ fname, lname, img }) {
         // minWidth: "150px",
         maxWidth: "180px",
         boxShadow: "none",
+        background: "rgb(250, 250, 250)",
         // border: "2px solid #FF9666",
       }}
     >
@@ -24,7 +25,7 @@ export default function ActionAreaCard({ fname, lname, img }) {
         alt="team member image"
         sx={{
           borderRadius: "50%",
-          border: "7px solid #FF9666 ",
+          border: "1px solid #555 ",
           aspectRatio: "1",
         }}
       />

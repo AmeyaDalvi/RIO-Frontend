@@ -37,7 +37,7 @@ function Search() {
 
   return (
     <div className={styles.main}>
-      <Box sx={{ mr: "1rem" }}>
+      <Box sx={{ mr: "1rem", font: "inherit" }}>
         <Button
           id="demo-customized-button"
           // aria-controls={open ? "demo-customized-menu" : undefined}
@@ -51,6 +51,12 @@ function Search() {
             borderRadius: "15px",
             mt: "0.8rem",
             width: "10rem",
+            background: "#555",
+            "&:hover": {
+              background: "#333",
+            },
+            font: "inherit",
+            textTransform: "none",
           }}
         >
           {selectedCategory}
@@ -155,6 +161,12 @@ function Search() {
         variant="standard"
         margin="normal"
         autoComplete="off"
+        sx={{
+          "& .MuiInput-underline:after": {
+            borderBottomColor: "#555",
+          },
+          font: "inherit",
+        }}
         InputProps={{
           autoComplete: "off",
           form: {

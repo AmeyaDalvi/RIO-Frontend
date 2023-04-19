@@ -7,9 +7,10 @@ const ProductDetails = () => {
   const {
     query: { id },
   } = useRouter();
-  console.log(id);
 
-  return <Container>{id && <Description pid={id} />}</Container>;
+  return (
+    <div style={{ marginTop: "4rem" }}> {id && <Description pid={id} />}</div>
+  );
 };
 
 export default ProductDetails;

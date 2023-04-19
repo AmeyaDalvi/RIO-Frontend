@@ -59,7 +59,14 @@ const Footer = () => {
           </ul>
         </div>
       </div>
-      <p style={{ color: "white", textAlign: "center", fontSize: "14rme" }}>
+      <p
+        style={{
+          color: "#333",
+          textAlign: "center",
+          fontSize: "1rem",
+          marginTop: "2rem",
+        }}
+      >
         Made with <span style={{ color: "red" }}>&#x2764;</span> Team 16 RIO -
         SE Spring 2023
       </p>

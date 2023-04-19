@@ -5,6 +5,7 @@
   align-items: center;
   row-gap: 5px;
   margin-top: -5px;
+  font: inherit;
 }
 
 /* h1 {

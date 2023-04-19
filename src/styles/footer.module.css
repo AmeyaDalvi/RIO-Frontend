@@ -1,8 +1,8 @@
 /*CSS For The Footer Component*/
 
 .footer {
-  background-color: #222;
-  color: #fff;
+  background-color: #efefef;
+  color: #000;
   padding: 50px 20px;
   bottom: 0;
   width: 100%;
@@ -10,7 +10,6 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  /* border: 2px solid red; */
 }
 
 .footer_wrapper {
@@ -19,10 +18,12 @@
 }
 
 .footer-content {
+  width: 100%;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   max-width: 1024px;
   align-items: flex-start;
+  justify-items: center;
   /* border: 2px solid red; */
   /* gap: 20px; */
 }
@@ -48,12 +49,14 @@
 }
 
 .footer-column a {
-  color: #fff;
+  color: #222;
   text-decoration: none;
+  transition: 0.2s;
 }
 
 .footer-column a:hover {
-  color: #666;
+  color: #888;
+  transition: 0.2s;
 }
 
 @media screen and (min-width: 1200px) {

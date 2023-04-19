@@ -90,6 +90,38 @@ body {
 
 body {
   color: black;
-  background: rgb(255, 255, 255);
+  background: rgb(250, 250, 250);
   height: 100%;
+}
+
+.swiper-button-prev {
+  font-size: 2rem !important;
+}
+
+.swiper-button-next {
+  font-size: 2rem !important;
+}
+
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  color: #fff !important;
+  font-size: 2rem !important;
+  font-weight: bolder;
+}
+
+.swiper-pagination-bullet-active {
+  background-color: #fff !important;
+}
+
+.rdrDateDisplayWrapper {
+  width: 480px;
+}
+
+.rdrMonths {
+  display: flex;
+  justify-content: center;
+}
+
+.rdrMonths .rdrMonth {
+  width: 30rem;
 }

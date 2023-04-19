@@ -30,7 +30,7 @@ const products = () => {
 
       if (response.status === 200) {
         const data = await response.json();
-        console.log(data);
+        // console.log(data);
         setProducts(data);
       } else if (response.status === 401) {
         console.log("Unauthorized");
@@ -43,9 +43,21 @@ const products = () => {
   };
   return (
     <div className={styles.container}>
-      <Filter />
+      <Box
+        display={{
+          xs: "none",
+          sm: "none",
+          md: "block",
+          lg: "block",
+        }}
+      >
+        <Filter />
+      </Box>
+
       <div className={styles.products}>
-        <Search />
+        <Box>
+          <Search />
+        </Box>
         {products.length != 0 ? (
           <List
             input={searchKey}

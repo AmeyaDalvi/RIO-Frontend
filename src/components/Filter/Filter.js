@@ -72,7 +72,13 @@ export default function Filter() {
         <h2>Filters</h2>
         <Divider />
         <br></br>
-        <FormControl>
+        <FormControl
+          sx={{
+            "& .MuiFormLabel-root.Mui-focused": {
+              color: "#555",
+            },
+          }}
+        >
           <FormLabel id="demo-radio-buttons-group-label">
             <h3 className="MuiTypography-root MuiTypography-h3 MuiTypography-noWrap css-ka8hcd">
               Ratings
@@ -82,6 +88,11 @@ export default function Filter() {
             aria-labelledby="demo-radio-buttons-group-label"
             name="radio-buttons-group"
             value={rating}
+            sx={{
+              "& .MuiRadio-colorPrimary.Mui-checked": {
+                color: "#555",
+              },
+            }}
             onClick={ratingHandler}
           >
             <FormControlLabel
@@ -89,7 +100,12 @@ export default function Filter() {
               control={<Radio />}
               label={
                 <div style={{ display: "flex", alignItems: "center" }}>
-                  <Rating name="disabled" value={4} readOnly />
+                  <Rating
+                    name="disabled"
+                    sx={{ color: "#555", fontSize: "20px" }}
+                    value={4}
+                    readOnly
+                  />
                   {"&up"}
                 </div>
               }
@@ -99,7 +115,12 @@ export default function Filter() {
               control={<Radio />}
               label={
                 <div style={{ display: "flex", alignItems: "center" }}>
-                  <Rating name="disabled" value={3} readOnly />
+                  <Rating
+                    name="disabled"
+                    sx={{ color: "#555", fontSize: "20px" }}
+                    value={3}
+                    readOnly
+                  />
                   {"&up"}
                 </div>
               }
@@ -109,7 +130,12 @@ export default function Filter() {
               control={<Radio />}
               label={
                 <div style={{ display: "flex", alignItems: "center" }}>
-                  <Rating name="disabled" value={2} readOnly />
+                  <Rating
+                    name="disabled"
+                    sx={{ color: "#555", fontSize: "20px" }}
+                    value={2}
+                    readOnly
+                  />
                   {"&up"}
                 </div>
               }
@@ -119,7 +145,12 @@ export default function Filter() {
               control={<Radio />}
               label={
                 <div style={{ display: "flex", alignItems: "center" }}>
-                  <Rating name="disabled" value={1} readOnly />
+                  <Rating
+                    name="disabled"
+                    sx={{ color: "#555", fontSize: "20px" }}
+                    value={1}
+                    readOnly
+                  />
                   {"&up"}
                 </div>
               }
@@ -150,6 +181,7 @@ export default function Filter() {
               onChangeCommitted={sliderStopHandler}
               valueLabelDisplay="auto"
               disableSwap
+              sx={{ color: "#555" }}
               marks={marks}
               min={0}
               max={10000}
