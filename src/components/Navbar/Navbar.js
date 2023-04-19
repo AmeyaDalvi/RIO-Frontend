@@ -26,7 +26,7 @@ const pages = [
   { name: "About Us", link: "/" },
 ];
 const login = "Login";
-const settings = ["Profile", "Account", "Dashboard"];
+const settings = ["Profile", "Account"];
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = useState(null);
@@ -92,6 +92,10 @@ function ResponsiveAppBar() {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+
+  const dashboardHandler = () => {
+    router.replace("/dashboard");
   };
 
   const logoutHandler = () => {
@@ -284,6 +288,9 @@ function ResponsiveAppBar() {
                     <Typography textAlign="center">{setting}</Typography>
                   </MenuItem>
                 ))}
+                <MenuItem key="dashboard" onClick={dashboardHandler}>
+                  <Typography textAlign="center">Dashboard</Typography>
+                </MenuItem>
                 <MenuItem key="logout" onClick={logoutHandler}>
                   <Typography textAlign="center">Logout</Typography>
                 </MenuItem>
