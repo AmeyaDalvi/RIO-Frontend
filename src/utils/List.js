@@ -14,21 +14,29 @@ function List({ input, rating, price, products }) {
   // console.log(category);
   const filterHandler = () => {
     const filtered = [];
-    products.forEach((el) => {
-      if (
-        el.pname.toLowerCase().includes(input.toLowerCase()) &&
-        el.rating >= rating &&
-        Number(el.price.replace("$", "").replace(".00", "")) >= price[0] &&
-        Number(el.price.replace("$", "").replace(".00", "")) <= price[1]
-      ) {
-        if (category === "") {
-          filtered.push(el);
-        } else if (category === el.category.split(" ")[0] && category !== "") {
-          filtered.push(el);
+    if (rating === "-1" && price === "-1" && input === ""){
+        setFilteredData(products)
+    }
+    else{
+      products.forEach((el) => {
+        if (
+          el.pname.toLowerCase().includes(input.toLowerCase()) &&
+          el.rating >= rating &&
+          Number(el.price.replace("$", "").replace(".00", "")) >= price[0] &&
+          Number(el.price.replace("$", "").replace(".00", "")) <= price[1]
+        ) {
+          if (category === "") {
+            filtered.push(el);
+          } else if (category === el.category.split(" ")[0] && category !== "") {
+            filtered.push(el);
+          }
         }
-      }
+      setFilteredData(filtered);
+
     });
-    setFilteredData(filtered);
+    }
+
+    
   };
 
   useEffect(() => {
