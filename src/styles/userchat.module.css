@@ -1,0 +1,9 @@
+.container {
+    display: flex;
+    max-width: 1024px;
+    margin: 0 auto;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+  }
