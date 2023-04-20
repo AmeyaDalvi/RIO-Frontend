@@ -1,0 +1,62 @@
+.container {
+    padding-left: 10%;
+    max-width: 1250px;
+    margin: 20 auto;
+    height: 100vh;
+    margin-top: 4rem;
+    font: inherit;
+  }
+
+.hr {
+    color:azure;
+    width: 70%;
+}
+
+.subheading {
+    color:grey;
+}
+
+.flexcard {
+    flex-direction: row;
+}
+
+.profile {
+    font-size:large;
+    color:grey;
+}
+
+.input {
+    font-size: large;
+    border-radius:10px;
+    padding: 0.5%;
+}
+
+.save {
+    font-size: large;
+    border-radius:10px;
+    padding: 0.5%;
+    cursor: pointer;
+    background-color: rgb(133, 175, 133);
+}
+
+.discard{
+    font-size: large;
+    border-radius:10px;
+    padding: 0.5%;
+    cursor: pointer;
+    background-color: rgb(209, 147, 147);
+}
+
+.flex_container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+}
+  
+  /* Responsive layout - makes a one column layout instead of a two-column layout */
+@media (max-width: 800px) {
+    .flex_container {
+      flex-direction: column;
+    }
+}
