@@ -10,16 +10,16 @@ const profile = () => {
 
     const router = useRouter();
 
-    const [fName, setFName] = useState([]);
-    const [lName, setLName] = useState([]);
-    const [email, setEmail] = useState([]);
-    const [profilepic, setPPic] = useState([]);
-    const [contact, setContact] = useState([]);
-    const [street, setStreet] = useState([]);
-    const [city, setCity] = useState([]);
-    const [state, setState] = useState([]);
-    const [country, setCountry] = useState([]);
-    const [zip, setZip] = useState([]);
+    const [fName, setFName] = useState("");
+    const [lName, setLName] = useState("");
+    const [email, setEmail] = useState("");
+    const [profilepic, setPPic] = useState("");
+    const [contact, setContact] = useState("");
+    const [street, setStreet] = useState("?");
+    const [city, setCity] = useState("");
+    const [state, setState] = useState("");
+    const [country, setCountry] = useState("");
+    const [zip, setZip] = useState("");
     
     let userInCookie = Cookies.get("rioUser");
     userInCookie = userInCookie !== undefined ? JSON.parse(userInCookie) : null;
@@ -32,46 +32,46 @@ const profile = () => {
         getAllProfileDetails();
     }, [tokenInCookie]);
 
-    const update = async () => {
-        const ucontact = document.getElementById("userContact").value;
-        const ustreet = document.getElementById("userStreet").value;
-        const ucity = document.getElementById("userCity").value;
-        const ustate = document.getElementById("userState").value;
-        const ucountry = document.getElementById("userCountry").value;
-        const uzip = document.getElementById("userZip").value;
+    const [ucontact, setuContact] = useState();
+    const [ustreet, setuStreet] = useState();
+    const [ucity, setuCity] = useState();
+    const [ustate, setuState] = useState();
+    const [ucountry, setuCountry] = useState();
+    const [uzip, setuZip] = useState();
 
+    const update = async () => {
         try {
-            console.log("isuser ",tokenInCookie)
-            console.log("hello",  userInCookie["user_id"])
+            console.log("isuser",tokenInCookie);
+            console.log("hello",  userInCookie["user_id"]);
             const response = await fetch(baseUrl + "/updateprofile?id=" + userInCookie["user_id"], {
-              method: "POST",
-              headers: {
-                "Authorization": "Bearer " + tokenInCookie,
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                emailId: userInCookie["email_id"],
-                contact: ucontact,
-                street: ustreet,
-                city: ucity,
-                state: ustate,
-                country: ucountry,
-                zip: uzip
+                method: "POST",
+                headers: {
+                    "Authorization": "Bearer " + tokenInCookie,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    emailId: userInCookie["email_id"],
+                    contact: ucontact,
+                    street: ustreet,
+                    city: ucity,
+                    state: ustate,
+                    country: ucountry,
+                    zip: uzip
                 }),
             });
             if (response.status === 200) {
               const data = await response.json();
               console.log("data",data);
-              router.replace("/profile");
+              alert("Your changes were saved");
             } else if (response.status === 401) {
               console.log("Unauthorized");
             } else if (response.status === 403) {
               console.log("Forbidden");
             }
-          } catch (error) {
+        } catch (error) {
             console.log(error);
-          }
-        };
+        }
+    };
 
     const discard = () => {
         router.replace("/profile");
@@ -114,6 +114,15 @@ const profile = () => {
                 setState(data[0]["State"]);
                 setCountry(data[0]["Country"]);
                 setZip(data[0]["Zip"]);
+
+                ////////////////////////////////
+                setuContact(data[0]["Contact"]);
+                setuStreet(data[0]["Street"]);
+                setuCity(data[0]["City"]);
+                setuState(data[0]["State"]);
+                setuCountry(data[0]["Country"]);
+                setuZip(data[0]["Zip"]);
+
             } else if (response.status === 401) {
                 console.log("Unauthorized");
             } else if (response.status === 403) {
@@ -142,30 +151,32 @@ const profile = () => {
                 <Chip label="primary" color="primary" />
             </div>
 
-            <br/><br/><h3>Phone Numbers</h3><hr className={styles.hr}/><br/>
-            <div className={styles.flex_container}>
-                <input id="userContact" className={styles.input} type="text" defaultValue={contact} placeholder="Enter Mobile Number"/>
-                <Chip label="primary" color="primary" />
-            </div>
+            {/* <form onSubmit={update}> */}
+                <br/><br/><h3>Phone Numbers</h3><hr className={styles.hr}/><br/>
+                <div className={styles.flex_container}>
+                    <input id="userContact" className={styles.input} type="text" defaultValue={contact} placeholder="Enter Mobile Number" onChange={(event) => setuContact(event.target.value)}/>
+                    <Chip label="primary" color="primary" />
+                </div>
 
-            <br/><br/><h3>Address</h3><hr className={styles.hr}/><br/>
-            <input id="userStreet" className={styles.input} type="text" defaultValue={street} placeholder="Enter Street Address"/><br/><br/>
-            
-            <div className={styles.flex_container}>
-            <input id="userCity" className={styles.input} type="text" defaultValue={city} placeholder="Enter City"/>
-            <input id="userZip" className={styles.input} type="text" defaultValue={zip} placeholder="Enter Zip"/>
-            </div><br/>
+                <br/><br/><h3>Address</h3><hr className={styles.hr}/><br/>
+                <input id="userStreet" className={styles.input} type="text" defaultValue={street} placeholder="Enter Street Address"  onChange={(event) => setuStreet(event.target.value)}/><br/><br/>
+                
+                <div className={styles.flex_container}>
+                <input id="userCity" className={styles.input} type="text" defaultValue={city} placeholder="Enter City"  onChange={(event) => setuCity(event.target.value)}/>
+                <input id="userZip" className={styles.input} type="text" defaultValue={zip} placeholder="Enter Zip"  onChange={(event) => setuZip(event.target.value)}/>
+                </div><br/>
 
-            <div className={styles.flex_container}>
-            <input id="userState" className={styles.input} type="text" defaultValue={state} placeholder="Enter State"/>
-            <input id="userCountry" className={styles.input} type="text" defaultValue={country} placeholder="Enter Country"/>
-            </div>
+                <div className={styles.flex_container}>
+                <input id="userState" className={styles.input} type="text" defaultValue={state} placeholder="Enter State"  onChange={(event) => setuState(event.target.value)}/>
+                <input id="userCountry" className={styles.input} type="text" defaultValue={country} placeholder="Enter Country"  onChange={(event) => setuCountry(event.target.value)}/>
+                </div>
 
-            <br/><br/>
-            <div className={styles.flex_container}>
-            <input className={styles.save} type="button" defaultValue="Save" onClick={update}/>
-            <input className={styles.discard} type="button" defaultValue="Discard" onClick={discard}/>
-            </div>
+                <br/><br/>
+                <div className={styles.flex_container}>
+                <input className={styles.save} type="button" defaultValue="Save" onClick={update}/>
+                <input className={styles.discard} type="button" defaultValue="Discard" onClick={discard}/>
+                </div>
+            {/* </form> */}
             <br/><br/>
         </div>
     );
