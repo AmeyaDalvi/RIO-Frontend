@@ -10,6 +10,7 @@ function List({ input, rating, price, products }) {
   const [filteredData, setFilteredData] = useState([]);
   const userCtx = useContext(UserContext);
   const category = userCtx.category;
+  console.log("products", products);
   // console.log(products);
   // console.log(category);
   const filterHandler = () => {
