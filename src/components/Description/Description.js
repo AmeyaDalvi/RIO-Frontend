@@ -131,7 +131,9 @@ export default function Description({ pid }) {
         );
         setSeller({
             "id": sellerId,
-            "name": data.SIName
+            "name": data.SIName,
+            "welcomeMessage": "Hey there!",
+            "role": "default"
           }
         )
       } else if (response.status === 401) {

@@ -32,7 +32,11 @@ const ChatButton = ({otherUser}) => {
         router.push({
             pathname: "/chat",
             query: {
-                currentUser: JSON.stringify({"id": userInCookie["user_id"], "name": userInCookie["first_name"] + " " + userInCookie["last_name"]}),
+                currentUser: JSON.stringify({"id": userInCookie["user_id"],
+                "name": userInCookie["first_name"] + " " + userInCookie["last_name"],
+                "welcomeMessage": "Hey there!",
+                "role": "default"
+            }),
                 otherUser: JSON.stringify(otherUser)
             },
         });
