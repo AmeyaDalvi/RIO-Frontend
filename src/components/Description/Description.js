@@ -31,6 +31,8 @@ import "react-date-range/dist/theme/default.css"; // theme css file
 import RentModalButton from "./RentModalButton";
 import UserChat from "components/Chat/UserChat";
 import ChatButton from "components/Chat/ChatButton";
+import Comments from "components/Description/Comments";
+import AddReviewModalButton from "./AddReviewModalButton";
 
 const LocationMap = dynamic(
   () => import("components/ProductDescription/LocationMap"),
@@ -395,7 +397,26 @@ export default function Description({ pid }) {
         <br></br>
         <LocationMap lat={product.SILat} lon={product.SILon} />
       </Box>
-      <Box>Comments</Box>
+      <Box>
+        <Comments productID={product.pid}/>
+      </Box>
+      {isUserLoggedIn ? (
+          <Box
+          sx={{
+            fontSize: "1rem",
+            marginTop: "0.7rem",
+            marginBottom: "0.7rem",
+            position: "center",
+            display: 'flex',
+            justifyContent: 'center'
+          }}
+        >
+          <AddReviewModalButton userid={userInCookie["user_id"]} productid={product.pid}/>
+          </Box>
+          ) : (
+            console.log("user not logged in")
+          )
+      }
     </Container>
   );
 }
