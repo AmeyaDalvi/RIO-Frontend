@@ -68,6 +68,26 @@ export default function Description({ pid }) {
 
   const [totalCost, setTotalCost] = useState(0);
 
+  let userInCookie = Cookies.get("rioUser");
+    userInCookie = userInCookie !== undefined ? JSON.parse(userInCookie) : null;
+    const tokenInCookie = Cookies.get("rioUserToken");
+    const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+    const [currentUser, setIsUser] = useState({});
+
+    useEffect(() => {
+      checkUserInCookie();
+    }, [tokenInCookie]);
+
+    const checkUserInCookie = () => {
+      if (tokenInCookie) {
+        setIsUserLoggedIn(true);
+        setIsUser(userInCookie);
+      } else {
+        setIsUserLoggedIn(false);
+        setIsUser({});
+      }
+    };
+
   useEffect(() => {
     fetchProductHandler(pid);
     setProduct({});
@@ -315,7 +335,12 @@ export default function Description({ pid }) {
             }}
           >
             <RentModalButton price={product.price} />
+            {isUserLoggedIn ? (
             <ChatButton otherUser={seller}/>
+            ) : (
+              console.log("chat not available")
+            )}
+              
           </Box>
         </Box>
       </Box>

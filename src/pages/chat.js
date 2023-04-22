@@ -3,22 +3,16 @@ import { useRouter } from 'next/router';
 import Talk from 'talkjs';
 import styles from "styles/userchat.module.css";
 
-export default function Chat() {
-  const chatboxEl = useRef();
-  const router = useRouter();
+function initChatbox(currentUser, otherUser, chatboxEl) {
+  Talk.ready
+    .then(() => {
+      const currentUserObject = currentUser ? JSON.parse(currentUser) : null;
+      const otherUserObject = otherUser ? JSON.parse(otherUser) : null;
 
-  const { currentUser, otherUser } = router.query;
-
-  useEffect(() => {
-    console.log('currentUser:', currentUser);
-    console.log('otherUser:', otherUser);
-
-    Talk.ready.then(() => {
-      const currentUserObject = JSON.parse(currentUser);
-      const otherUserObject = JSON.parse(otherUser);
-
-      console.log('currentUserObject:', currentUserObject);
-      console.log('otherUserObject:', otherUserObject);
+      if (!currentUserObject || !otherUserObject) {
+        console.log('Missing user information');
+        return;
+      }
 
       const currentUserTalkJS = new Talk.User(currentUserObject);
       const otherUserTalkJS = new Talk.User(otherUserObject);
@@ -37,13 +31,34 @@ export default function Chat() {
 
       const chatbox = session.createChatbox();
       chatbox.select(conversation);
-
-      console.log('chatbox:', chatbox);
-      console.log('conversation:', conversation);
-
       chatbox.mount(chatboxEl.current);
+    })
+    .catch(error => {
+      console.error(error instanceof Error ? error : new Error(error));
     });
-  }, [currentUser, otherUser]);
+}
+
+export default function Chat() {
+  const chatboxEl = useRef();
+  const router = useRouter();
+  const { currentUser, otherUser } = router.query;
+
+  // useEffect(() => {
+  //   initChatbox(currentUser, otherUser, chatboxEl);
+  //   // const timeout = setTimeout(() => {
+  //   //   location.reload();
+  //   // }, 1000);
+
+  //   // return () => clearTimeout(timeout);
+  // }, [currentUser, otherUser, chatboxEl]);
+
+  useEffect(() => {
+    Talk.ready.then(() => {
+      initChatbox(currentUser, otherUser, chatboxEl);
+    }).catch(error => {
+      console.error(error instanceof Error ? error : new Error(error));
+    });
+  }, [currentUser, otherUser, chatboxEl]);
 
   return (
     <div className={styles.container}>
