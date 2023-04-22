@@ -29,7 +29,8 @@ import "swiper/css/autoplay";
 import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import RentModalButton from "./RentModalButton";
-// import LocationMap from "components/ProductDescription/LocationMap";
+import UserChat from "components/Chat/UserChat";
+import ChatButton from "components/Chat/ChatButton";
 
 const LocationMap = dynamic(
   () => import("components/ProductDescription/LocationMap"),
@@ -54,6 +55,8 @@ export default function Description({ pid }) {
   };
 
   const [product, setProduct] = useState(0);
+  const [seller, setSeller] = useState(0);
+  const [sellerId, setSellerId] = useState(0);
   const [address, setAddress] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const handleOpen = () => setOpenModal(true);
@@ -64,6 +67,26 @@ export default function Description({ pid }) {
   const [endDate, setEndDate] = useState(null);
 
   const [totalCost, setTotalCost] = useState(0);
+
+  let userInCookie = Cookies.get("rioUser");
+    userInCookie = userInCookie !== undefined ? JSON.parse(userInCookie) : null;
+    const tokenInCookie = Cookies.get("rioUserToken");
+    const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+    const [currentUser, setIsUser] = useState({});
+
+    useEffect(() => {
+      checkUserInCookie();
+    }, [tokenInCookie]);
+
+    const checkUserInCookie = () => {
+      if (tokenInCookie) {
+        setIsUserLoggedIn(true);
+        setIsUser(userInCookie);
+      } else {
+        setIsUserLoggedIn(false);
+        setIsUser({});
+      }
+    };
 
   useEffect(() => {
     fetchProductHandler(pid);
@@ -84,6 +107,24 @@ export default function Description({ pid }) {
 
   let fetchProductHandler = async (productId) => {
     try {
+
+      const res = await fetch(
+        baseUrl + '/getsellerid',{
+          method:"POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({productid: productId}),
+        }
+      )
+      if (res.status === 200) {
+        const udata = await res.json();
+        console.log("SELLER ID - ", udata[0]["UserID"])
+        setSellerId(udata[0]["UserID"]);
+      } else if (res.status === 401) {
+        console.log("Unauthorized");
+      }
+
       const response = await fetch(
         baseUrl + `/getproduct?productid=${productId}`,
         {
@@ -108,6 +149,13 @@ export default function Description({ pid }) {
             " " +
             data.SIZip
         );
+        setSeller({
+            "id": sellerId,
+            "name": data.SIName,
+            "welcomeMessage": "Hey there!",
+            "role": "default"
+          }
+        )
       } else if (response.status === 401) {
         console.log("Unauthorized");
       } else if (response.status === 403) {
@@ -278,7 +326,22 @@ export default function Description({ pid }) {
           >
             <b>Description:</b> &nbsp;{product.desc}
           </Box>
-          <RentModalButton price={product.price} />
+          <Box 
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 1,
+            }}
+          >
+            <RentModalButton price={product.price} />
+            {isUserLoggedIn ? (
+            <ChatButton otherUser={seller}/>
+            ) : (
+              console.log("chat not available")
+            )}
+              
+          </Box>
         </Box>
       </Box>
       <Box
