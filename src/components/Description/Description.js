@@ -31,6 +31,7 @@ import "react-date-range/dist/theme/default.css"; // theme css file
 import RentModalButton from "./RentModalButton";
 import UserChat from "components/Chat/UserChat";
 import ChatButton from "components/Chat/ChatButton";
+import Comments from "components/Description/Comments";
 
 const LocationMap = dynamic(
   () => import("components/ProductDescription/LocationMap"),
@@ -395,7 +396,9 @@ export default function Description({ pid }) {
         <br></br>
         <LocationMap lat={product.SILat} lon={product.SILon} />
       </Box>
-      <Box>Comments</Box>
+      <Box>
+        <Comments productID={product.pid}/>
+      </Box>
     </Container>
   );
 }
