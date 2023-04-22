@@ -18,6 +18,7 @@ import { Link } from "@mui/material";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import AddProductModal from "../AddProduct/AddProductModal";
 
 const pages = [
   { name: "Home", link: "/" },
@@ -26,11 +27,13 @@ const pages = [
   { name: "About Us", link: "/" },
 ];
 const login = "Login";
+const add_product = "Add Product";
 // const settings = ["Account"];
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
+  const [sideBar, setSideBar] = useState(false);
   const router = useRouter();
   const navbarPosition =
     router.pathname === "/products" || router.pathname === "/products/[id]"
@@ -193,6 +196,17 @@ function ResponsiveAppBar() {
                   </Typography>
                 </MenuItem>
               ))}
+              <MenuItem
+                key="add_product"
+                onClick={() => {
+                  handleCloseNavMenu();
+                  setSideBar(true);
+                }}
+              >
+                <Typography textAlign="center" sx={{ my: 2, color: "black" }}>
+                  Add Product
+                </Typography>
+              </MenuItem>
             </Menu>
           </Box>
           <Link
@@ -257,7 +271,15 @@ function ResponsiveAppBar() {
               {login}
             </Button>
           ) : (
-            <Box sx={{ flexGrow: 0, ml: 7 }}>
+            <Box
+              sx={{
+                flexGrow: 0,
+                display: "flex",
+                gap: 2,
+                alignItems: "center",
+              }}
+            >
+              <AddProductModal />
               <Tooltip
                 title={isUser["first_name"] + " " + isUser["last_name"]}
                 arrow
@@ -295,11 +317,11 @@ function ResponsiveAppBar() {
                 <MenuItem key="Profile" onClick={profileHandler}>
                   <Typography textAlign="center">Profile</Typography>
                 </MenuItem>
-                
+
                 <MenuItem key="dashboard" onClick={dashboardHandler}>
                   <Typography textAlign="center">Dashboard</Typography>
                 </MenuItem>
-                
+
                 <MenuItem key="logout" onClick={logoutHandler}>
                   <Typography textAlign="center">Logout</Typography>
                 </MenuItem>
