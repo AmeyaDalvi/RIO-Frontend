@@ -110,7 +110,7 @@ const RentModalButton = ({ price }) => {
 
       if (response.status === 200) {
         const data = await response.json();
-        console.log("data", data[0]);
+        // console.log("data", data[0]);
 
         setAddress([
           data[0].Street,
