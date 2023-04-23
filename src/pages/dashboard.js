@@ -50,7 +50,6 @@ const dashboard = () => {
       );
       if (response.status === 200) {
         const data = await response.json();
-        console.log("data", data);
         setPostedProducts(data);
       } else if (response.status === 401) {
         console.log("Unauthorized");
