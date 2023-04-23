@@ -31,7 +31,7 @@ import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
 // import LocationMap from "components/ProductDescription/LocationMap";
 
-const RentModalButton = ({ price }) => {
+const RentModalButton = ({ price, productStatus }) => {
   const router = useRouter();
   const userCtx = useContext(UserContext);
   const verify = Cookies.get("rioUserToken");
@@ -65,7 +65,22 @@ const RentModalButton = ({ price }) => {
 
   return (
     <Box>
-      <Button
+      {productStatus == 1 ? (
+        <Button
+        sx={{
+          backgroundColor: "#E9ECF1",
+          color: "black",
+          border: "1px solid black",
+          fontSize: "18px",
+          fontWeight: "bold",
+          width: "100px",
+        }}
+        disabled = {true}
+      >
+        Rented
+      </Button>
+      ) : (
+        <Button
         sx={{
           color: "black",
           border: "1px solid black",
@@ -81,6 +96,7 @@ const RentModalButton = ({ price }) => {
       >
         Rent
       </Button>
+      )}
       {verify === undefined ? (
         <Modal
           open={openModal}
