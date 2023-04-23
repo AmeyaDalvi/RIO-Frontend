@@ -33,6 +33,7 @@ import UserChat from "components/Chat/UserChat";
 import ChatButton from "components/Chat/ChatButton";
 import Comments from "components/Description/Comments";
 import AddReviewModalButton from "./AddReviewModalButton";
+import AddUserComplaintModalButton from "components/Complaint/AddUserComplaintModalButton";
 
 const LocationMap = dynamic(
   () => import("components/ProductDescription/LocationMap"),
@@ -64,6 +65,7 @@ export default function Description({ pid }) {
   const handleOpen = () => setOpenModal(true);
   const handleClose = () => setOpenModal(false);
   const [open, setOpen] = useState(false);
+  const [productStatus, setProductStatus] = useState(0);
 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -179,6 +181,21 @@ export default function Description({ pid }) {
     //         response[0].SIZip
     //     );
     //   });
+
+    const productStatus = await fetch(
+      baseUrl + `/getrentedproductstatus?id=${userInCookie["user_id"]}&product_id=${productId}`,{
+        method:"GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    if (productStatus.status === 200) {
+      const pstatus = await productStatus.json();
+      setProductStatus(pstatus[0]['Result']);
+    } else if (productStatus.status === 401) {
+      console.log("Unauthorized");
+    }
   };
 
   return (
@@ -287,6 +304,22 @@ export default function Description({ pid }) {
           // border="2px solid red"
         >
           <h1>{product.pname}</h1>
+          {productStatus == 1 ? (
+          <Box
+          sx={{
+            display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 1,
+          }}
+        >
+          <AddReviewModalButton userid={userInCookie["user_id"]} productid={product.pid}/>
+          <AddUserComplaintModalButton userid={userInCookie["user_id"]} productid={product.pid}/>
+          </Box>
+          ) : (
+            console.log("user not logged in")
+          )
+      }
           <Rating
             readOnly
             name="precision-rating"
@@ -336,7 +369,7 @@ export default function Description({ pid }) {
               gap: 1,
             }}
           >
-            <RentModalButton price={product.price} />
+            <RentModalButton price={product.price} productStatus={productStatus} />
             {isUserLoggedIn ? (
             <ChatButton otherUser={seller}/>
             ) : (
@@ -400,7 +433,7 @@ export default function Description({ pid }) {
       <Box>
         <Comments productID={product.pid}/>
       </Box>
-      {isUserLoggedIn ? (
+      {/* {isUserLoggedIn ? (
           <Box
           sx={{
             fontSize: "1rem",
@@ -416,7 +449,7 @@ export default function Description({ pid }) {
           ) : (
             console.log("user not logged in")
           )
-      }
+      } */}
     </Container>
   );
 }

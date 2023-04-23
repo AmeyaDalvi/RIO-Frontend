@@ -4,37 +4,34 @@ import { Button, Modal, IconButton, Divider, TextField, Rating, Snackbar, Alert 
 import { Close } from "@mui/icons-material";
 import { baseUrl } from 'utils/baseUrl';
 
-const AddReviewModalButton = ({userid, productid}) => {
+const AddUserComplaintModalButton = ({userid, productid}) => {
 
-    const [rating, setRating] = useState(0);
-    const [review, setReview] = useState("");
+    const [complaint, setComplaint] = useState("");
     const [submitted, setSubmitted] = useState(false);
     const [successSnackbar, setSuccessSnackbar] = useState(false);
     const [errorSnackbar, setErrorSnackbar] = useState(false);
 
     const submitBtnHandler = async() => {
 
-        if(rating == 0 || !review) {
+        if(!complaint) {
             setErrorSnackbar(true);
             return;
         }
 
         const res = await fetch(
-            baseUrl + `/insertprodreviews?id=${userid}`,{
+            baseUrl + `/fileacomplaint?id=${userid}&product_id=${productid}`,{
               method:"POST",
               headers: {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify(
                 {
-                    productid: productid,
-                    rating: rating,
-                    comment: review
+                    description: complaint
                 }),
             }
           )
           if (res.status === 200) {
-            console.log("review added successfully")
+            console.log("complaint added successfully")
             setSuccessSnackbar(true);
             setSubmitted(true)
           } else if (res.status === 401) {
@@ -48,7 +45,7 @@ const AddReviewModalButton = ({userid, productid}) => {
         setOpenModal(false);
     };
 
-    const addReviewHandler = () => {
+    const addComplaintHandler = () => {
         handleOpen();
     };
 
@@ -72,8 +69,8 @@ const AddReviewModalButton = ({userid, productid}) => {
                         color: "#2E3E8C",
                     },
                 }}
-                onClick={addReviewHandler}
-                ><u>Add Review</u>
+                onClick={addComplaintHandler}
+                ><u>Add Complaint</u>
             </Button>
 
             <Modal
@@ -88,8 +85,8 @@ const AddReviewModalButton = ({userid, productid}) => {
                     top: "50%",
                     left: "50%",
                     transform: "translate(-50%, -50%)",
-                    width: 600,
-                    height: 420,
+                    width: 500,
+                    height: 380,
                     backgroundColor: "#fff",
                     boxShadow: 24,
                     p: 4,
@@ -103,7 +100,7 @@ const AddReviewModalButton = ({userid, productid}) => {
                     justifyContent: "space-between",
                     }}
                 >
-                    <h2>Add Your Review</h2>
+                    <h2>Add Your Complaint</h2>
                     <IconButton
                     aria-label="close"
                     color="inherit"
@@ -136,28 +133,20 @@ const AddReviewModalButton = ({userid, productid}) => {
                     >
                     <TextField
                         id="outlined-basic-desc"
-                        label="Write your review"
+                        label="Write your complaint"
                         variant="outlined"
-                        placeholder="For ex. Good product"
+                        placeholder="For ex. Bad product"
                         fullWidth
                         type="text"
                         multiline
-                        rows={4}
+                        rows={5}
                         font="inherit"
-                        value={review}
+                        value={complaint}
                         onChange={(e) => {
-                          setReview(e.target.value);
+                            setComplaint(e.target.value);
                         }}
                         disabled={submitted}
                     />
-                    <Box display="flex" flexDirection="column" alignItems="center">
-                        <Rating name="rating" value={rating} disabled={submitted} size="large"
-                         sx={{
-                            fontSize: '2.5rem'
-                            }} 
-                        onChange={(event, newValue) => setRating(newValue)}
-                        />
-                    </Box>
                     <Button variant="contained" color="primary" disabled={submitted} onClick={submitBtnHandler}
                     sx={{
                       background: "#000000",
@@ -179,7 +168,7 @@ const AddReviewModalButton = ({userid, productid}) => {
                     onClose={() => setSuccessSnackbar(false)}
                     >
                         <Alert severity="success">
-                            Rating and comment added successfully!
+                            Complaint added.
                         </Alert>
                 </Snackbar>
                 <Snackbar open={errorSnackbar} autoHideDuration={2000} 
@@ -191,7 +180,7 @@ const AddReviewModalButton = ({userid, productid}) => {
                     }}
                     onClose={() => setErrorSnackbar(false)}>
                         <Alert severity="error">
-                            All fields are compulsory!
+                            Enter complaint before submitting.
                         </Alert>
                 </Snackbar>
                 </Box>
@@ -200,4 +189,4 @@ const AddReviewModalButton = ({userid, productid}) => {
     )
 };
 
-export default AddReviewModalButton;
+export default AddUserComplaintModalButton;

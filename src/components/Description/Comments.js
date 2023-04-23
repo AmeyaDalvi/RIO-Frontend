@@ -40,13 +40,13 @@ export default function Comments({ productID }) {
       >
         <b>User Reviews and Ratings:</b>
         </Grid>
-      {comments?.length > 0 ? (
+      {comments.length > 0 ? (
         comments.map(comment => (
           <React.Fragment key={comment.UserID}>
             <Grid item xs={6}>
             <Box>
             <Typography sx={{ color: 'text.secondary', fontSize: '15px', textDecoration: 'underline', textTransform: 'uppercase'}}>{comment.FName + " " + comment.LName}</Typography>
-              <Typography variant="h6" color="primary" style={{ fontSize: '20px' }}><b>{comment.Comment}</b></Typography>
+              <Typography variant="h6" color="#2B7F8C" style={{ fontSize: '20px' }}><b>{comment.Comment}</b></Typography>
               </Box>
             </Grid>
             <Grid item xs={6}>
