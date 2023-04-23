@@ -115,7 +115,7 @@ const profile = () => {
                 setCountry(data[0]["Country"]);
                 setZip(data[0]["Zip"]);
 
-                ////////////////////////////////
+                /*  new contact and address details   */
                 setuContact(data[0]["Contact"]);
                 setuStreet(data[0]["Street"]);
                 setuCity(data[0]["City"]);
