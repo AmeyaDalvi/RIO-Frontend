@@ -74,7 +74,6 @@ const dashboard = () => {
 
       if (response.status === 200) {
         const data = await response.json();
-        // console.log("purchased", data);
         setPurchasedProducts(data);
       } else if (response.status === 401) {
         console.log("Unauthorized");
