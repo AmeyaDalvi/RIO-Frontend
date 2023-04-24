@@ -32,6 +32,7 @@ import RentModalButton from "./RentModalButton";
 import UserChat from "components/Chat/UserChat";
 import ChatButton from "components/Chat/ChatButton";
 import Comments from "components/Description/Comments";
+import Recommendation from "components/Description/Recommendation";
 import AddReviewModalButton from "./AddReviewModalButton";
 import AddUserComplaintModalButton from "components/Complaint/AddUserComplaintModalButton";
 
@@ -432,6 +433,9 @@ export default function Description({ pid }) {
       </Box>
       <Box>
         <Comments productID={product.pid}/>
+      </Box>
+      <Box>
+        <Recommendation productCategory={product.category}/>
       </Box>
       {/* {isUserLoggedIn ? (
           <Box
