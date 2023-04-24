@@ -2,6 +2,16 @@ import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Talk from 'talkjs';
 import styles from "styles/userchat.module.css";
+import { Box, Button, IconButton } from "@mui/material";
+import { Chat as ChatIcon, People } from '@mui/icons-material';
+
+const admin = JSON.stringify({
+  id: 17,
+  name: "admin",
+  welcomeMessage: "Hi! This is the admin!",
+  role: "default"
+});
+
 
 function initChatbox(currentUser, otherUser, chatboxEl) {
   Talk.ready
@@ -16,6 +26,7 @@ function initChatbox(currentUser, otherUser, chatboxEl) {
 
       const currentUserTalkJS = new Talk.User(currentUserObject);
       const otherUserTalkJS = new Talk.User(otherUserObject);
+
 
       const session = new Talk.Session({
         appId: process.env.NEXT_PUBLIC_TALKJS_APP_ID,
@@ -43,15 +54,6 @@ export default function Chat() {
   const router = useRouter();
   const { currentUser, otherUser } = router.query;
 
-  // useEffect(() => {
-  //   initChatbox(currentUser, otherUser, chatboxEl);
-  //   // const timeout = setTimeout(() => {
-  //   //   location.reload();
-  //   // }, 1000);
-
-  //   // return () => clearTimeout(timeout);
-  // }, [currentUser, otherUser, chatboxEl]);
-
   useEffect(() => {
     Talk.ready.then(() => {
       initChatbox(currentUser, otherUser, chatboxEl);
@@ -63,6 +65,19 @@ export default function Chat() {
   return (
     <div className={styles.container}>
       <div ref={chatboxEl} style={{ width: '100%', height: '80%' }} />
+      <Box sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 1,
+            }}>
+            <IconButton onClick={() => initChatbox(currentUser, admin, chatboxEl)}>
+            <People />
+              </IconButton>
+              <IconButton onClick={() => initChatbox(currentUser, otherUser, chatboxEl)}>
+              <People />
+              </IconButton>
+          </Box>
     </div>
   );
 }

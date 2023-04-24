@@ -58,8 +58,10 @@ export default function Description({ pid }) {
   };
 
   const [product, setProduct] = useState(0);
-  const [seller, setSeller] = useState(0);
+  const [seller, setSeller] = useState(null);
   const [sellerId, setSellerId] = useState(0);
+  const [renter, setRenter] = useState(null);
+  const [renterId, setRenterId] = useState(0);
   const [address, setAddress] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const handleOpen = () => setOpenModal(true);
@@ -98,8 +100,48 @@ export default function Description({ pid }) {
   }, []);
 
   useEffect(() => {
+    fetchSellerIdHandler(pid);
+  }, []);
+
+  useEffect(() => {
+    setSellerInfo();
+  }, [sellerId]);
+
+  useEffect(() => {
+    fetchRenterIdHandler(pid);
+  }, []);
+
+  // useEffect(() => {
+  //   setRenterInfo();
+  // }, [renterId]);
+
+  // useEffect(() => {
+  //   setSellerIdHandler(pid);
+  //   setSeller({});
+  // }, []);
+  
+
+  useEffect(() => {
     costCalculator();
   }, [endDate]);
+
+  const setSellerInfo = () => {
+    setSeller({
+      "id": sellerId,
+      "name": product.SIName,
+      "welcomeMessage": "Hey there!",
+      "role": "default"
+    });
+  };
+
+  // const setRenterInfo = () => {
+  //   setRenter({
+  //     "id": renterId,
+  //     "name": product.SIName,
+  //     "welcomeMessage": "Hey there!",
+  //     "role": "default"
+  //   });
+  // };
 
   const costCalculator = () => {
     let d1 = new Date(startDate).toISOString().split("T")[0];
@@ -109,26 +151,70 @@ export default function Description({ pid }) {
     setTotalCost(diffDays === 0 ? 1 * product.price : diffDays * product.price);
   };
 
+  let fetchSellerIdHandler = async (productId) => {
+    try {
+        const res = await fetch(
+          baseUrl + '/getsellerid',{
+            method:"POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({productid: productId}),
+          }
+        )
+        if (res.status === 200) {
+          const udata = await res.json();
+          console.log("SELLER ID - ", udata[0]["UserID"])
+          setSellerId(udata[0]["UserID"]);
+          // setSeller({
+          //   "id": udata[0]["UserID"],
+          //   "name": product.SIName,
+          //   "welcomeMessage": "Hey there!",
+          //   "role": "default"
+          // });
+      console.log("IMPPP - ", seller, sellerId);
+        } else if (res.status === 401) {
+          console.log("Unauthorized");
+        }
+        
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  let fetchRenterIdHandler = async (productId) => {
+    try {
+        const res = await fetch(
+          baseUrl + '/getrenterdetails',{
+            method:"POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({productid: productId}),
+          }
+        )
+        if (res.status === 200) {
+          const udata = await res.json();
+          // console.log("SELLER ID - ", udata[0]["UserID"])
+          // setRenter(udata);
+          setRenter({
+            "id": udata[0]["UserID"],
+            "name": udata[0].FName + " " + udata[0].LName,
+            "welcomeMessage": "Hey there!",
+            "role": "default"
+          });
+      console.log("RENTER ", renter);
+        } else if (res.status === 401) {
+          console.log("Unauthorized");
+        }
+        
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   let fetchProductHandler = async (productId) => {
     try {
-
-      const res = await fetch(
-        baseUrl + '/getsellerid',{
-          method:"POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({productid: productId}),
-        }
-      )
-      if (res.status === 200) {
-        const udata = await res.json();
-        console.log("SELLER ID - ", udata[0]["UserID"])
-        setSellerId(udata[0]["UserID"]);
-      } else if (res.status === 401) {
-        console.log("Unauthorized");
-      }
-
       const response = await fetch(
         baseUrl + `/getproduct?productid=${productId}`,
         {
@@ -153,13 +239,7 @@ export default function Description({ pid }) {
             " " +
             data.SIZip
         );
-        setSeller({
-            "id": sellerId,
-            "name": data.SIName,
-            "welcomeMessage": "Hey there!",
-            "role": "default"
-          }
-        )
+        
       } else if (response.status === 401) {
         console.log("Unauthorized");
       } else if (response.status === 403) {
@@ -180,8 +260,8 @@ export default function Description({ pid }) {
     //         response[0].SICountry +
     //         response[0].SIZip
     //     );
-    //   });
-
+    //   });)
+    if(isUserLoggedIn){
     const productStatus = await fetch(
       baseUrl + `/getrentedproductstatus?id=${userInCookie["user_id"]}&product_id=${productId}`,{
         method:"GET",
@@ -192,10 +272,12 @@ export default function Description({ pid }) {
     )
     if (productStatus.status === 200) {
       const pstatus = await productStatus.json();
+      console.log("statuss ",pstatus)
       setProductStatus(pstatus[0]['Result']);
     } else if (productStatus.status === 401) {
       console.log("Unauthorized");
     }
+  }
   };
 
   return (
@@ -371,7 +453,7 @@ export default function Description({ pid }) {
           >
             <RentModalButton price={product.price} productStatus={productStatus} />
             {isUserLoggedIn ? (
-            <ChatButton otherUser={seller}/>
+            <ChatButton otherUser={seller} renter={renter}/>
             ) : (
               console.log("chat not available")
             )}
@@ -431,7 +513,7 @@ export default function Description({ pid }) {
         <LocationMap lat={product.SILat} lon={product.SILon} />
       </Box>
       <Box>
-        <Comments productID={product.pid}/>
+        <Comments productID={product?.pid}/>
       </Box>
       {/* {isUserLoggedIn ? (
           <Box
