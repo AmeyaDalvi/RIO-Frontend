@@ -9,6 +9,8 @@ export const UserContext = createContext({
   setSearchKeyword: (key) => {},
   category: "All",
   setCategory: (category) => {},
+  snackBar: false,
+  setSnackBar: (snackBar) => {},
 });
 
 export const UserContextProvider = (props) => {
@@ -16,6 +18,7 @@ export const UserContextProvider = (props) => {
   const [priceStored, setPriceStored] = useState([0, 10000]);
   const [searchKeywordStored, setSearchKeywordStored] = useState("");
   const [categoryStored, setCategoryStored] = useState("");
+  const [snackBarStored, setSnackBarStored] = useState(false);
 
   const setRatingHandler = (rating) => {
     setRatingStored(rating);
@@ -29,6 +32,9 @@ export const UserContextProvider = (props) => {
   const categoryHandler = (category) => {
     setCategoryStored(category);
   };
+  const snackBarHandler = (snackBar) => {
+    setSnackBarStored(snackBar);
+  };
 
   const contextValue = useMemo(
     () => ({
@@ -40,8 +46,16 @@ export const UserContextProvider = (props) => {
       setSearchKeyword: searchKeywordHandler,
       category: categoryStored,
       setCategory: categoryHandler,
+      snackBar: snackBarStored,
+      setSnackBar: snackBarHandler,
     }),
-    [ratingStored, priceStored, searchKeywordStored, categoryStored]
+    [
+      ratingStored,
+      priceStored,
+      searchKeywordStored,
+      categoryStored,
+      snackBarStored,
+    ]
   );
 
   return (

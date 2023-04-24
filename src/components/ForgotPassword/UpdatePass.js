@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { baseUrl } from "utils/baseUrl";
 import Testimonial from "components/extras/Testimonial";
 import { useRouter } from "next/router";
+import Cookies from "js-cookie";
 
 export const UpdatePass = () => {
   const [invalidCredential, setInvalidCredential] = useState(false);

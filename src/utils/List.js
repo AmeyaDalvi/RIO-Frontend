@@ -9,16 +9,16 @@ import Link from "next/link";
 function List({ input, rating, price, products }) {
   const [filteredData, setFilteredData] = useState([]);
   const userCtx = useContext(UserContext);
+
   const category = userCtx.category;
   console.log("products", products);
   // console.log(products);
   // console.log(category);
   const filterHandler = () => {
     const filtered = [];
-    if (rating === "-1" && price === "-1" && input === ""){
-        setFilteredData(products)
-    }
-    else{
+    if (rating === "-1" && price === "-1" && input === "") {
+      setFilteredData(products);
+    } else {
       products.forEach((el) => {
         if (
           el.pname.toLowerCase().includes(input.toLowerCase()) &&
@@ -28,16 +28,16 @@ function List({ input, rating, price, products }) {
         ) {
           if (category === "") {
             filtered.push(el);
-          } else if (category === el.category.split(" ")[0] && category !== "") {
+          } else if (
+            category === el.category.split(" ")[0] &&
+            category !== ""
+          ) {
             filtered.push(el);
           }
         }
-      setFilteredData(filtered);
-
-    });
+        setFilteredData(filtered);
+      });
     }
-
-    
   };
 
   useEffect(() => {

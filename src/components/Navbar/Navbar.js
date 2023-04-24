@@ -98,14 +98,17 @@ function ResponsiveAppBar() {
   };
 
   const profileHandler = () => {
+    setAnchorElUser(null);
     router.replace("/profile");
   };
 
   const dashboardHandler = () => {
+    setAnchorElUser(null);
     router.replace("/dashboard");
   };
 
   const logoutHandler = () => {
+    setAnchorElUser(null);
     Cookies.remove("rioUser");
     Cookies.remove("rioUserToken");
     router.replace("/");

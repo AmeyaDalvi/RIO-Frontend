@@ -1,4 +1,6 @@
-import React from "react";
+//use client;
+
+import React, { useRef } from "react";
 import { Box } from "@mui/system";
 import {
   Button,
@@ -29,12 +31,68 @@ import "swiper/css/autoplay";
 
 import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
+import { baseUrl } from "utils/baseUrl";
 // import LocationMap from "components/ProductDescription/LocationMap";
 
-const RentModalButton = ({ price, productStatus }) => {
+const RentModalButton = ({ price, productId, productStatus }) => {
   const router = useRouter();
   const userCtx = useContext(UserContext);
   const verify = Cookies.get("rioUserToken");
+  let userInCookie = Cookies.get("rioUser");
+  userInCookie = userInCookie !== undefined ? JSON.parse(userInCookie) : null;
+
+  console.log("user", userInCookie);
+
+  const [error, setError] = useState(false);
+  const [nameCardError, setNameCardError] = useState(false);
+  const [cardNumberError, setCardNumberError] = useState(false);
+  const [expiryDateError, setExpiryDateError] = useState(false);
+  const [cvvError, setCvvError] = useState(false);
+
+  const startDateRef = useRef();
+  const endDateRef = useRef();
+  const nameCardRef = useRef();
+  const cardNumberRef = useRef();
+  const expiryDateRef = useRef();
+  const cvvRef = useRef();
+
+  const form = useRef();
+
+  const isInputError = () => {
+    let errorFlag = false;
+
+    setNameCardError(false);
+    setCardNumberError(false);
+    setExpiryDateError(false);
+    setCvvError(false);
+    setError(false);
+
+    if (nameCardRef.current.value === "") {
+      setNameCardError(true);
+      errorFlag = true;
+    }
+    if (cardNumberRef.current.value === "") {
+      setCardNumberError(true);
+      errorFlag = true;
+    }
+    if (expiryDateRef.current.value === "") {
+      setExpiryDateError(true);
+      errorFlag = true;
+    }
+    if (cvvRef.current.value === "") {
+      setCvvError(true);
+      errorFlag = true;
+    }
+    return errorFlag;
+  };
+
+  useEffect(() => {
+    setNameCardError(false);
+    setCardNumberError(false);
+    setExpiryDateError(false);
+    setCvvError(false);
+    setError(false);
+  }, []);
 
   const rentBtnHandler = () => {
     handleOpen();
@@ -42,6 +100,7 @@ const RentModalButton = ({ price, productStatus }) => {
       setOpen(true);
     }
   };
+
   const costCalculator = () => {
     let d1 = new Date(startDate).toISOString().split("T")[0];
     let d2 = new Date(endDate).toISOString().split("T")[0];
@@ -52,7 +111,14 @@ const RentModalButton = ({ price, productStatus }) => {
 
   const [openModal, setOpenModal] = useState(false);
   const handleOpen = () => setOpenModal(true);
-  const handleClose = () => setOpenModal(false);
+  const handleClose = () => {
+    setOpenModal(false);
+    setNameCardError(false);
+    setCardNumberError(false);
+    setExpiryDateError(false);
+    setCvvError(false);
+    setError(false);
+  };
   const [open, setOpen] = useState(false);
 
   const [startDate, setStartDate] = useState(null);
@@ -63,39 +129,78 @@ const RentModalButton = ({ price, productStatus }) => {
     costCalculator();
   }, [endDate]);
 
+  const rentDataHandler = (e) => {
+    e.preventDefault();
+    const isError = isInputError();
+    isError && setError(true);
+    if (!isError) {
+      setOpenModal(false);
+      setNameCardError(false);
+      setCardNumberError(false);
+      setExpiryDateError(false);
+      setCvvError(false);
+      setError(false);
+      rentHandler();
+    }
+  };
+
+  const rentHandler = async () => {
+    try {
+      const response = await fetch(
+        baseUrl + "/rentaproduct?id=" + userInCookie["user_id"],
+        {
+          method: "POST",
+          body: JSON.stringify({
+            productId: productId,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + verify,
+          },
+        }
+      );
+      if (response.status === 200) {
+        const data = await response.json();
+        router.reload();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <Box>
       {productStatus == 1 ? (
         <Button
-        sx={{
-          backgroundColor: "#E9ECF1",
-          color: "black",
-          border: "1px solid black",
-          fontSize: "18px",
-          fontWeight: "bold",
-          width: "100px",
-        }}
-        disabled = {true}
-      >
-        Rented
-      </Button>
+          sx={{
+            backgroundColor: "#E9ECF1",
+            color: "black",
+            border: "1px solid black",
+            fontSize: "18px",
+            fontWeight: "bold",
+            width: "100px",
+          }}
+          disabled={true}
+        >
+          Rented
+        </Button>
       ) : (
         <Button
-        sx={{
-          color: "black",
-          border: "1px solid black",
-          fontSize: "18px",
-          fontWeight: "bold",
-          ":hover": {
-            background: "black",
-            color: "white",
-          },
-          width: "80px",
-        }}
-        onClick={rentBtnHandler}
-      >
-        Rent
-      </Button>
+          sx={{
+            color: "black",
+            border: "1px solid black",
+            fontSize: "18px",
+            fontWeight: "bold",
+            ":hover": {
+              background: "black",
+              color: "white",
+            },
+            width: "80px",
+          }}
+          onClick={rentBtnHandler}
+        >
+          Rent
+        </Button>
       )}
       {verify === undefined ? (
         <Modal
@@ -154,6 +259,7 @@ const RentModalButton = ({ price, productStatus }) => {
               boxShadow: 24,
               p: 4,
             }}
+            onSubmit={rentDataHandler}
           >
             <Box
               sx={{
@@ -165,6 +271,11 @@ const RentModalButton = ({ price, productStatus }) => {
               }}
             >
               <h2>Rent Product</h2>
+              {error && (
+                <h4 style={{ color: "red" }}>
+                  Fill out all the mandatory fields
+                </h4>
+              )}
               <IconButton
                 aria-label="close"
                 color="inherit"
@@ -207,6 +318,7 @@ const RentModalButton = ({ price, productStatus }) => {
                       setStartDate(newVal);
                     }}
                     minDate={dayjs(new Date())}
+                    inputRef={startDateRef}
                   />
                 </LocalizationProvider>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -218,6 +330,7 @@ const RentModalButton = ({ price, productStatus }) => {
                     }}
                     minDate={startDate}
                     disabled={startDate !== null ? false : true}
+                    inputRef={endDateRef}
                   />
                 </LocalizationProvider>
               </Box>
@@ -253,75 +366,149 @@ const RentModalButton = ({ price, productStatus }) => {
                 py={2}
                 width="100%"
               >
-                <Stack
-                  display="flex"
-                  direction="row"
-                  justifyContent="center"
-                  alignItems="center"
-                  spacing={1}
-                  mb="2rem"
-                >
-                  <TextField
-                    id="outlined-basic"
-                    label="Name on Card"
-                    variant="outlined"
-                    placeholder="For ex. John Doe"
-                    fullWidth
-                    type="text"
-                    // onChange={(e) => {
-                    //   setCardName(e.target.value);
-                    // }}
-                  />
-                  <TextField
-                    id="outlined-basic"
-                    label="Card Number"
-                    variant="outlined"
-                    placeholder="XXXX-XXXX-XXXX-XXXX"
-                    fullWidth
-                    type="number"
-                    inputProps={{
-                      inputMode: "numeric",
-                      pattern: "[0-9]*",
-                    }}
-                    // onChange={(e) => {
-                    //   setCardNumber(e.target.value);
-                    // }}
-                  />
-                </Stack>
-                <Stack
-                  display="flex"
-                  direction="row"
-                  justifyContent="center"
-                  alignItems="center"
-                  spacing={1}
-                  mb="2rem"
-                >
-                  <TextField
-                    id="outlined-basic"
-                    label="Expiry Date"
-                    variant="outlined"
-                    fullWidth
-                    type="text"
-                    placeholder="For ex. 10/26"
-                    inputProps={{
-                      pattern: "[0-9]*/[0-9]*",
-                    }}
-                    // onChange={(e) => { d
-                    //   setExpiryDate(e.target.value);
-                    // }}
-                  />
-                  <TextField
-                    id="outlined-basic"
-                    label="CVV"
-                    variant="outlined"
-                    fullWidth
-                    type="number"
-                    placeholder="For ex. 123"
-                    // onChange={(e) => {
-                    //   setCvv(e.target.value);
-                    // }}
-                  />
-                </Stack>
+                {endDate ? (
+                  <Box>
+                    <Stack
+                      display="flex"
+                      direction="row"
+                      justifyContent="center"
+                      alignItems="center"
+                      spacing={1}
+                      mb="2rem"
+                    >
+                      <TextField
+                        id="outlined-basic"
+                        label="Name on Card"
+                        variant="outlined"
+                        placeholder="For ex. John Doe"
+                        fullWidth
+                        type="text"
+                        error={nameCardError}
+                        inputRef={nameCardRef}
+                      />
+                      <TextField
+                        id="outlined-basic"
+                        label="Card Number"
+                        variant="outlined"
+                        placeholder="XXXX-XXXX-XXXX-XXXX"
+                        fullWidth
+                        type="number"
+                        inputProps={{
+                          inputMode: "numeric",
+                          pattern: "[0-9]*",
+                        }}
+                        error={cardNumberError}
+                        inputRef={cardNumberRef}
+                      />
+                    </Stack>
+                    <Stack
+                      display="flex"
+                      direction="row"
+                      justifyContent="center"
+                      alignItems="center"
+                      spacing={1}
+                      mb="2rem"
+                    >
+                      <TextField
+                        id="outlined-basic"
+                        label="Expiry Date"
+                        variant="outlined"
+                        fullWidth
+                        type="text"
+                        placeholder="For ex. 10/26"
+                        inputProps={{
+                          pattern: "[0-9]*/[0-9]*",
+                        }}
+                        error={expiryDateError}
+                        inputRef={expiryDateRef}
+                      />
+                      <TextField
+                        id="outlined-basic"
+                        label="CVV"
+                        variant="outlined"
+                        fullWidth
+                        type="number"
+                        placeholder="For ex. 123"
+                        error={cvvError}
+                        inputRef={cvvRef}
+                      />
+                    </Stack>
+                  </Box>
+                ) : (
+                  <Box>
+                    <Stack
+                      display="flex"
+                      direction="row"
+                      justifyContent="center"
+                      alignItems="center"
+                      spacing={1}
+                      mb="2rem"
+                    >
+                      <TextField
+                        id="outlined-basic"
+                        label="Name on Card"
+                        variant="outlined"
+                        placeholder="For ex. John Doe"
+                        fullWidth
+                        type="text"
+                        disabled
+                      />
+                      <TextField
+                        id="outlined-basic"
+                        label="Card Number"
+                        variant="outlined"
+                        placeholder="XXXX-XXXX-XXXX-XXXX"
+                        fullWidth
+                        type="number"
+                        inputProps={{
+                          inputMode: "numeric",
+                          pattern: "[0-9]*",
+                        }}
+                        disabled
+                        // onChange={(e) => {
+                        //   setCardNumber(e.target.value);
+                        // }}
+                      />
+                    </Stack>
+                    <Stack
+                      display="flex"
+                      direction="row"
+                      justifyContent="center"
+                      alignItems="center"
+                      spacing={1}
+                      mb="2rem"
+                    >
+                      <TextField
+                        id="outlined-basic"
+                        label="Expiry Date"
+                        variant="outlined"
+                        fullWidth
+                        type="text"
+                        placeholder="For ex. 10/26"
+                        inputProps={{
+                          pattern: "[0-9]*/[0-9]*",
+                        }}
+                        disabled
+                        // onChange={(e) => { d
+                        //   setExpiryDate(e.target.value);
+                        // }}
+                      />
+                      <TextField
+                        id="outlined-basic"
+                        label="CVV"
+                        variant="outlined"
+                        fullWidth
+                        type="number"
+                        placeholder="For ex. 123"
+                        // onChange={(e) => {
+                        //   setCvv(e.target.value);
+                        // }}
+                        disabled
+                      />
+                    </Stack>
+                  </Box>
+                )}
+
                 <Stack
                   display="flex"
                   direction="row"
@@ -332,31 +519,53 @@ const RentModalButton = ({ price, productStatus }) => {
                   <Button
                     variant="contained"
                     sx={{
-                      background: "#000000",
-                      color: "#ffffff",
+                      background: "#ffffff",
+                      color: "#000000",
+                      // borderBottom: "1px solid #666666",
+                      boxShadow: "none",
                       ":hover": {
-                        background: "#000000",
-                        color: "#ffffff",
+                        background: "#ffffff",
+                        color: "#000000",
+                        boxShadow: "none",
                       },
                     }}
                     onClick={handleClose}
                   >
                     Cancel
                   </Button>
-                  <Button
-                    variant="contained"
-                    sx={{
-                      background: "#000000",
-                      color: "#ffffff",
-                      ":hover": {
+
+                  {endDate ? (
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      sx={{
                         background: "#000000",
                         color: "#ffffff",
-                      },
-                    }}
-                    // onClick={handleRent}
-                  >
-                    Checkout
-                  </Button>
+                        ":hover": {
+                          background: "#000000",
+                          color: "#ffffff",
+                        },
+                      }}
+                    >
+                      Checkout
+                    </Button>
+                  ) : (
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      sx={{
+                        background: "#000000",
+                        color: "#ffffff",
+                        ":hover": {
+                          background: "#000000",
+                          color: "#ffffff",
+                        },
+                      }}
+                      disabled
+                    >
+                      Checkout
+                    </Button>
+                  )}
                 </Stack>
               </Box>
             </Box>

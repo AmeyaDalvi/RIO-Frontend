@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import { baseUrl } from "utils/baseUrl";
@@ -18,6 +18,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import dayjs, { Dayjs } from "dayjs";
+import Snackbar from "@mui/material/Snackbar";
 
 import { Button, Rating } from "@mui/material";
 // Import Swiper styles
@@ -34,7 +35,10 @@ import ChatButton from "components/Chat/ChatButton";
 import Comments from "components/Description/Comments";
 import Recommendation from "components/Description/Recommendation";
 import AddReviewModalButton from "./AddReviewModalButton";
+
 import AddUserComplaintModalButton from "components/Complaint/AddUserComplaintModalButton";
+
+import { UserContext } from "store/UserContext";
 
 const LocationMap = dynamic(
   () => import("components/ProductDescription/LocationMap"),
@@ -50,6 +54,9 @@ export default function Description({ pid }) {
   const router = useRouter();
   // const { productId } = router.query;
   const verify = Cookies.get("rioUserToken");
+  const userCtx = useContext(UserContext);
+
+  const openSnackbar = userCtx.snackBar;
 
   const rentBtnHandler = () => {
     handleOpen();
@@ -74,24 +81,24 @@ export default function Description({ pid }) {
   const [totalCost, setTotalCost] = useState(0);
 
   let userInCookie = Cookies.get("rioUser");
-    userInCookie = userInCookie !== undefined ? JSON.parse(userInCookie) : null;
-    const tokenInCookie = Cookies.get("rioUserToken");
-    const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
-    const [currentUser, setIsUser] = useState({});
+  userInCookie = userInCookie !== undefined ? JSON.parse(userInCookie) : null;
+  const tokenInCookie = Cookies.get("rioUserToken");
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const [currentUser, setIsUser] = useState({});
 
-    useEffect(() => {
-      checkUserInCookie();
-    }, [tokenInCookie]);
+  useEffect(() => {
+    checkUserInCookie();
+  }, [tokenInCookie]);
 
-    const checkUserInCookie = () => {
-      if (tokenInCookie) {
-        setIsUserLoggedIn(true);
-        setIsUser(userInCookie);
-      } else {
-        setIsUserLoggedIn(false);
-        setIsUser({});
-      }
-    };
+  const checkUserInCookie = () => {
+    if (tokenInCookie) {
+      setIsUserLoggedIn(true);
+      setIsUser(userInCookie);
+    } else {
+      setIsUserLoggedIn(false);
+      setIsUser({});
+    }
+  };
 
   useEffect(() => {
     fetchProductHandler(pid);
@@ -110,21 +117,26 @@ export default function Description({ pid }) {
     setTotalCost(diffDays === 0 ? 1 * product.price : diffDays * product.price);
   };
 
+  const handleCloseSnackBar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    userCtx.setSnackBar(false);
+  };
+
   let fetchProductHandler = async (productId) => {
     try {
-
-      const res = await fetch(
-        baseUrl + '/getsellerid',{
-          method:"POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({productid: productId}),
-        }
-      )
+      const res = await fetch(baseUrl + "/getsellerid", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ productid: productId }),
+      });
       if (res.status === 200) {
         const udata = await res.json();
-        console.log("SELLER ID - ", udata[0]["UserID"])
+        console.log("SELLER ID - ", udata[0]["UserID"]);
         setSellerId(udata[0]["UserID"]);
       } else if (res.status === 401) {
         console.log("Unauthorized");
@@ -143,6 +155,7 @@ export default function Description({ pid }) {
       if (response.status === 200) {
         const data = await response.json();
         setProduct(data);
+        console.log("PRODUCT - ", data);
         setAddress(
           data.SIStreet +
             " " +
@@ -155,12 +168,11 @@ export default function Description({ pid }) {
             data.SIZip
         );
         setSeller({
-            "id": sellerId,
-            "name": data.SIName,
-            "welcomeMessage": "Hey there!",
-            "role": "default"
-          }
-        )
+          id: sellerId,
+          name: data.SIName,
+          welcomeMessage: "Hey there!",
+          role: "default",
+        });
       } else if (response.status === 401) {
         console.log("Unauthorized");
       } else if (response.status === 403) {
@@ -170,30 +182,19 @@ export default function Description({ pid }) {
       console.log(error);
     }
 
-    // fetch(`getproduct?productid=${productId}`)
-    //   .then((response) => response.json())
-    //   .then((response) => {
-    //     setProduct(response[0]);
-    //     setAddress(
-    //       response[0].SIStreet +
-    //         response[0].SICity +
-    //         response[0].SIState +
-    //         response[0].SICountry +
-    //         response[0].SIZip
-    //     );
-    //   });
-
     const productStatus = await fetch(
-      baseUrl + `/getrentedproductstatus?id=${userInCookie["user_id"]}&product_id=${productId}`,{
-        method:"GET",
+      baseUrl +
+        `/getrentedproductstatus?id=${userInCookie["user_id"]}&product_id=${productId}`,
+      {
+        method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
       }
-    )
+    );
     if (productStatus.status === 200) {
       const pstatus = await productStatus.json();
-      setProductStatus(pstatus[0]['Result']);
+      setProductStatus(pstatus[0]["Result"]);
     } else if (productStatus.status === 401) {
       console.log("Unauthorized");
     }
@@ -204,256 +205,294 @@ export default function Description({ pid }) {
       sx={{ height: "100vh", pt: "3rem", px: "3rem", pb: "0rem" }}
       maxWidth="lg"
     >
-      <Box
-        // sx={{ paddingTop: "2rem" }}
-        display="flex"
-        flexDirection={{ xs: "column", sm: "column", md: "row", md: "row" }}
-        justifyContent={{
-          xs: "center",
-          sm: "center",
-          md: "center",
-          lg: "center",
-        }}
-        alignItems={{
-          xs: "center",
-          sm: "center",
-          md: "initial",
-          lg: "initial",
-        }}
-        // border="2px solid red"
-        mb="1rem"
-        sx={{
-          maxHeight: "100%",
-        }}
-      >
-        <Box
-          sx={{
-            // aspectRatio: "16/9",
-            // boxShadow: "rgb(0 0 0 / 0.06) 0px 0px 20px 6px",
-            height: "100%",
-            // border: "2px solid red",
-          }}
-          marginBottom={{ xs: "4rem", sm: "4rem" }}
-          maxWidth={{ xs: "400px", sm: "400px", md: "580px", lg: "580px" }}
-          // aspectRatio="16/9"
-          // border="2px solid red"
-        >
-          <Swiper
-            spaceBetween={30}
-            centeredSlides={true}
-            autoplay={{
-              delay: 3500,
-              disableOnInteraction: false,
-            }}
-            pagination={{
-              clickable: true,
-            }}
-            navigation={true}
-            modules={[Autoplay, Pagination, Navigation]}
-            className="mySwiper"
-          >
-            <SwiperSlide style={{ height: "300px", weight: "600px" }}>
-              <img
-                style={{
-                  display: "block",
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                }}
-                src={product.img}
-              />
-            </SwiperSlide>
-            <SwiperSlide style={{ height: "300px", weight: "600px" }}>
-              <img
-                style={{
-                  display: "block",
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                }}
-                src={product.img}
-              />
-            </SwiperSlide>
-            <SwiperSlide style={{ height: "300px", weight: "600px" }}>
-              <img
-                style={{
-                  display: "block",
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                }}
-                src={product.img}
-              />
-            </SwiperSlide>
-          </Swiper>
-        </Box>
-        <Box
-          sx={{
-            // paddingTop: "0.2rem",
-            // border: "2px solid red",
-            width: "100%",
-            flexDirection: "column",
-            // boxShadow: "rgb(0 0 0 / 0.06) 0px 0px 20px 6px",
-          }}
-          pl={{ xs: "0px", sm: "0px", md: "4rem", lg: "4rem" }}
-          mt={{
-            xs: "0px",
-            sm: "0px",
-            md: "1rem",
-            lg: "1rem",
-          }}
-          // border="2px solid red"
-        >
-          <h1>{product.pname}</h1>
-          {productStatus == 1 ? (
+      {(product !== 0) & (address !== "") && (
+        <Box>
           <Box
-          sx={{
-            display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 1,
-          }}
-        >
-          <AddReviewModalButton userid={userInCookie["user_id"]} productid={product.pid}/>
-          <AddUserComplaintModalButton userid={userInCookie["user_id"]} productid={product.pid}/>
-          </Box>
-          ) : (
-            console.log("user not logged in")
-          )
-      }
-          <Rating
-            readOnly
-            name="precision-rating"
-            value={product.rating ? product.rating : 0}
-            precision={0.5}
-            sx={{
-              fontSize: "1.5rem",
-              marginTop: "0.5rem",
-              marginBottom: "0.5rem",
-              color: "#555",
+            // sx={{ paddingTop: "2rem" }}
+            display="flex"
+            flexDirection={{ xs: "column", sm: "column", md: "row", md: "row" }}
+            justifyContent={{
+              xs: "center",
+              sm: "center",
+              md: "center",
+              lg: "center",
             }}
-          />
-          <Box
+            alignItems={{
+              xs: "center",
+              sm: "center",
+              md: "initial",
+              lg: "initial",
+            }}
+            // border="2px solid red"
+            mb="1rem"
             sx={{
-              fontSize: "1.5rem",
-              fontWeight: "bold",
-              marginTop: "0.5rem",
-              marginBottom: "0.5rem",
+              maxHeight: "100%",
             }}
           >
-            Price: ＄{product.price}.00
-          </Box>
-          <Box
-            sx={{
-              fontSize: "1rem",
-              marginTop: "0.7rem",
-              marginBottom: "0.7rem",
-            }}
-          >
-            <b>Category:</b> &nbsp;{product.category}
-          </Box>
+            <Box
+              sx={{
+                // aspectRatio: "16/9",
+                // boxShadow: "rgb(0 0 0 / 0.06) 0px 0px 20px 6px",
+                height: "100%",
+                // border: "2px solid red",
+              }}
+              marginBottom={{ xs: "4rem", sm: "4rem" }}
+              maxWidth={{ xs: "400px", sm: "400px", md: "580px", lg: "580px" }}
+              // aspectRatio="16/9"
+              // border="2px solid red"
+            >
+              <Swiper
+                spaceBetween={30}
+                centeredSlides={true}
+                autoplay={{
+                  delay: 3500,
+                  disableOnInteraction: false,
+                }}
+                pagination={{
+                  clickable: true,
+                }}
+                navigation={true}
+                modules={[Autoplay, Pagination, Navigation]}
+                className="mySwiper"
+              >
+                {/* <SwiperSlide style={{ height: "300px", weight: "600px" }}>
+                  <img
+                    style={{
+                      display: "block",
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                    src={product.img}
+                  />
+                </SwiperSlide>
+                <SwiperSlide style={{ height: "300px", weight: "600px" }}>
+                  <img
+                    style={{
+                      display: "block",
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                    src={product.img}
+                  />
+                </SwiperSlide> */}
 
+                {product["img"].map((img) => (
+                  <SwiperSlide style={{ height: "300px", weight: "600px" }}>
+                    <img
+                      style={{
+                        display: "block",
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                      src={img}
+                    />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            </Box>
+            <Box
+              sx={{
+                // paddingTop: "0.2rem",
+                // border: "2px solid red",
+                width: "100%",
+                flexDirection: "column",
+                // boxShadow: "rgb(0 0 0 / 0.06) 0px 0px 20px 6px",
+              }}
+              pl={{ xs: "0px", sm: "0px", md: "4rem", lg: "4rem" }}
+              mt={{
+                xs: "0px",
+                sm: "0px",
+                md: "1rem",
+                lg: "1rem",
+              }}
+              // border="2px solid red"
+            >
+              <h1>{product.pname}</h1>
+              {productStatus == 1 ? (
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 1,
+                  }}
+                >
+                  <AddReviewModalButton
+                    userid={userInCookie["user_id"]}
+                    productid={product.pid}
+                  />
+                  <AddUserComplaintModalButton
+                    userid={userInCookie["user_id"]}
+                    productid={product.pid}
+                  />
+                </Box>
+              ) : (
+                console.log("user not logged in")
+              )}
+              <Rating
+                readOnly
+                name="precision-rating"
+                value={product.rating ? product.rating : 0}
+                precision={0.5}
+                sx={{
+                  fontSize: "1.5rem",
+                  marginTop: "0.5rem",
+                  marginBottom: "0.5rem",
+                  color: "#555",
+                }}
+              />
+              <Box
+                sx={{
+                  fontSize: "1.5rem",
+                  fontWeight: "bold",
+                  marginTop: "0.5rem",
+                  marginBottom: "0.5rem",
+                }}
+              >
+                Price: ＄{product.price}.00
+              </Box>
+              <Box
+                sx={{
+                  fontSize: "1rem",
+                  marginTop: "0.7rem",
+                  marginBottom: "0.7rem",
+                }}
+              >
+                <b>Category:</b> &nbsp;{product.category}
+              </Box>
+
+              <Box
+                sx={{
+                  fontSize: "1rem",
+                  marginTop: "0.7rem",
+                  marginBottom: "0.7rem",
+                }}
+              >
+                <b>Description:</b> &nbsp;{product.desc}
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 1,
+                }}
+              >
+                <RentModalButton
+                  price={product.price}
+                  productId={product.pid}
+                  productStatus={productStatus}
+                />
+                {isUserLoggedIn ? (
+                  <ChatButton otherUser={seller} />
+                ) : (
+                  console.log("chat not available")
+                )}
+              </Box>
+            </Box>
+          </Box>
           <Box
             sx={{
-              fontSize: "1rem",
-              marginTop: "0.7rem",
+              fontSize: "1.2rem",
               marginBottom: "0.7rem",
             }}
+            pt={{ xs: "3rem", sm: "3rem", md: "0", lg: "0" }}
+            mt={{ xs: "0rem", sm: "0rem", md: "-2rem", lg: "-2rem" }}
           >
-            <b>Description:</b> &nbsp;{product.desc}
+            <Box sx={{ fontWeight: "bold" }}>Seller Information:</Box>
+            <Box
+              sx={{
+                fontSize: "1rem",
+                marginTop: "0.5rem",
+                marginBottom: "0.5rem",
+              }}
+            >
+              <b>Name:</b>
+              &nbsp;{product.SIName}
+            </Box>
+            <Box
+              sx={{
+                fontSize: "1rem",
+                marginTop: "0.5rem",
+                marginBottom: "0.5rem",
+              }}
+            >
+              <b>Contact Info:</b>
+              &nbsp;{product.SIContact}
+            </Box>
           </Box>
-          <Box 
+          <Box
             sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 1,
+              fontSize: "1.2rem",
+              // fontWeight: "bold",
+              marginBottom: "0.7rem",
+              mt: "4rem",
             }}
           >
-            <RentModalButton price={product.price} productStatus={productStatus} />
-            {isUserLoggedIn ? (
-            <ChatButton otherUser={seller}/>
-            ) : (
-              console.log("chat not available")
-            )}
-              
+            <b>Seller Location:</b>
+            <Box
+              sx={{
+                fontSize: "1rem",
+                marginTop: "0.7rem",
+                marginBottom: "0.7rem",
+              }}
+            >
+              {address}
+            </Box>
+            <br></br>
+            <LocationMap lat={product.SILat} lon={product.SILon} />
           </Box>
-        </Box>
-      </Box>
-      <Box
-        sx={{
-          fontSize: "1.2rem",
-          marginBottom: "0.7rem",
-        }}
-        pt={{ xs: "3rem", sm: "3rem", md: "0", lg: "0" }}
-        mt={{ xs: "0rem", sm: "0rem", md: "-2rem", lg: "-2rem" }}
-      >
-        <Box sx={{ fontWeight: "bold" }}>Seller Information:</Box>
-        <Box
-          sx={{
-            fontSize: "1rem",
-            marginTop: "0.5rem",
-            marginBottom: "0.5rem",
-          }}
-        >
-          <b>Name:</b>
-          &nbsp;{product.SIName}
-        </Box>
-        <Box
-          sx={{
-            fontSize: "1rem",
-            marginTop: "0.5rem",
-            marginBottom: "0.5rem",
-          }}
-        >
-          <b>Contact Info:</b>
-          &nbsp;{product.SIContact}
-        </Box>
-      </Box>
-      <Box
-        sx={{
-          fontSize: "1.2rem",
-          // fontWeight: "bold",
-          marginBottom: "0.7rem",
-          mt: "4rem",
-        }}
-      >
-        <b>Seller Location:</b>
-        <Box
-          sx={{
-            fontSize: "1rem",
-            marginTop: "0.7rem",
-            marginBottom: "0.7rem",
-          }}
-        >
-          {address}
-        </Box>
-        <br></br>
-        <LocationMap lat={product.SILat} lon={product.SILon} />
-      </Box>
-      <Box>
-        <Comments productID={product.pid}/>
-      </Box>
-      <Box>
-        <Recommendation productCategory={product.category} productId={product.pid} />
-      </Box>
-      {/* {isUserLoggedIn ? (
-          <Box
-          sx={{
-            fontSize: "1rem",
-            marginTop: "0.7rem",
-            marginBottom: "0.7rem",
-            position: "center",
-            display: 'flex',
-            justifyContent: 'center'
-          }}
-        >
-          <AddReviewModalButton userid={userInCookie["user_id"]} productid={product.pid}/>
+          <Box>
+            <Comments productID={product.pid} />
           </Box>
+          <Box>
+            <Recommendation
+              productCategory={product.category}
+              productId={product.pid}
+            />
+          </Box>
+          {/* {isUserLoggedIn ? (
+            <Box
+              sx={{
+                fontSize: "1rem",
+                marginTop: "0.7rem",
+                marginBottom: "0.7rem",
+                position: "center",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <AddReviewModalButton
+                userid={userInCookie["user_id"]}
+                productid={product.pid}
+              />
+            </Box>
           ) : (
             console.log("user not logged in")
-          )
-      } */}
+          )}*/}
+          <Snackbar
+            open={openSnackbar}
+            autoHideDuration={3000}
+            onClose={handleCloseSnackBar}
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          >
+            <Alert
+              onClose={handleCloseSnackBar}
+              sx={{
+                width: "100%",
+                color: "#fff",
+                backgroundColor: "#333",
+                borderRadius: "15px",
+              }}
+            >
+              Product Added Succesfully!
+            </Alert>
+          </Snackbar>
+        </Box>
+      )}
     </Container>
   );
 }

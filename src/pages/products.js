@@ -66,7 +66,7 @@ const products = () => {
             products={products}
           />
         ) : (
-          "None"
+          ""
         )}
       </div>
     </div>
