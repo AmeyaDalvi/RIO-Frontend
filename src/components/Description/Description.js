@@ -435,7 +435,7 @@ export default function Description({ pid }) {
         <Comments productID={product.pid}/>
       </Box>
       <Box>
-        <Recommendation productCategory={product.category}/>
+        <Recommendation productCategory={product.category} productId={product.pid} />
       </Box>
       {/* {isUserLoggedIn ? (
           <Box

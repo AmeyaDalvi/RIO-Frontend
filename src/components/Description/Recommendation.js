@@ -1,17 +1,16 @@
 import { useState, useEffect } from 'react';
-import { Box, Typography, Grid } from '@mui/material';
-import { Rating } from '@mui/material';
 import { baseUrl } from 'utils/baseUrl';
 import React from 'react';
 import List from "utils/List";
-import Divider from "@mui/material/Divider";
 import styles from "styles/recommend.module.css";
 
-const Recommendation = ({ productCategory }) => {
+const Recommendation = ({ productCategory, productId }) => {
   const [recProducts, setRecProducts] = useState([]);
 
   useEffect(() => {
-    
+    fetchRecProducts();
+  }, [productCategory, productId]);
+
     const fetchRecProducts = async () => {
         try {
             const response = await fetch(
@@ -21,7 +20,7 @@ const Recommendation = ({ productCategory }) => {
                 headers: {
                   "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ category: productCategory }),
+                body: JSON.stringify({ "category": productCategory, "pid": productId }),
               }
             );
             if (response.status === 200) {
@@ -37,19 +36,15 @@ const Recommendation = ({ productCategory }) => {
           }
     };
 
-    fetchRecProducts();
-  }, [productCategory]);
-
   return (
-
     <div className={styles.container}>
-      <div className={styles.products}>
-        <h2>Recommended based on your shopping trends</h2>
-        {recProducts.length !== 0 ? (
-          <List input="" rating="-1" price="-1" products={recProducts} />
-        ) : (
-          "Currently there are no recommendations"
-        )}
+        <div className={styles.products}>
+            <h2>Recommended based on your shopping trends</h2>
+            {recProducts.length !== 0 ? (
+            <List input="" rating="-1" price="-1" products={recProducts} />
+            ) : (
+            "Currently there are no recommendations"
+            )}
         </div>
     </div>
   );
