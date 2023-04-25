@@ -325,7 +325,7 @@ export default function Description({ pid }) {
               // border="2px solid red"
             >
               <h1>{product.pname}</h1>
-              {productStat == 1 ? (
+              {product.pStatus == 4 ? (
                 <Box
                   sx={{
                     display: "flex",
@@ -395,13 +395,17 @@ export default function Description({ pid }) {
                   gap: 1,
                 }}
               >
+                {userInCookie["user_id"] !== seller.id ? (
                 <RentModalButton
                   price={product.price}
                   productId={product.pid}
                   productStatus={productStat}
                 />
+                ) : (
+                  console.log("user and seller same")
+                )}
 
-                {productStat == 1 && seller !== {} ? (
+                {product.pStatus == 4 ? (
                   <ChatButton otherUser={seller} renter={renter} />
                 ) : (
                   console.log("chat not available")
