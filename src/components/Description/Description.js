@@ -65,7 +65,7 @@ export default function Description({ pid }) {
   const [product, setProduct] = useState(0);
   const [seller, setSeller] = useState({});
   const [sellerId, setSellerId] = useState(0);
-  const [renter, setRenter] = useState(null);
+  const [renter, setRenter] = useState({});
   const [renterId, setRenterId] = useState(0);
   const [address, setAddress] = useState("");
   const [openModal, setOpenModal] = useState(false);
@@ -119,6 +119,15 @@ export default function Description({ pid }) {
     });
   };
 
+  const setRenterInfo = (data) => {
+    setRenter({
+      id: data[0]["UserID"],
+      name: data[0]["FName"] + " " + data[0]["LName"],
+      welcomeMessage: "Hey there!",
+      role: "default",
+    });
+  };
+
   const costCalculator = () => {
     let d1 = new Date(startDate).toISOString().split("T")[0];
     let d2 = new Date(endDate).toISOString().split("T")[0];
@@ -163,12 +172,7 @@ export default function Description({ pid }) {
         const udata = await res.json();
         // console.log("SELLER ID - ", udata[0]["UserID"])
         // setRenter(udata);
-        setRenter({
-          id: udata[0]["UserID"],
-          name: udata[0].FName + " " + udata[0].LName,
-          welcomeMessage: "Hey there!",
-          role: "default",
-        });
+        setRenterInfo(udata);
         console.log("RENTER ", renter);
       } else if (res.status === 401) {
         console.log("Unauthorized");
@@ -396,6 +400,7 @@ export default function Description({ pid }) {
                   productId={product.pid}
                   productStatus={productStat}
                 />
+
                 {productStat == 1 && seller !== {} ? (
                   <ChatButton otherUser={seller} renter={renter} />
                 ) : (
