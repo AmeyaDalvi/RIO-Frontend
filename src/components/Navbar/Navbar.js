@@ -106,12 +106,12 @@ function ResponsiveAppBar() {
 
   const profileHandler = () => {
     setAnchorElUser(null);
-    router.replace("/profile");
+    router.push("/profile");
   };
 
   const dashboardHandler = () => {
     setAnchorElUser(null);
-    router.replace("/dashboard");
+    router.push("/dashboard");
   };
 
   const logoutHandler = () => {

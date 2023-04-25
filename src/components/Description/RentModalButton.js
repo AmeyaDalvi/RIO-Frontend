@@ -41,7 +41,7 @@ const RentModalButton = ({ price, productId, productStatus }) => {
   let userInCookie = Cookies.get("rioUser");
   userInCookie = userInCookie !== undefined ? JSON.parse(userInCookie) : null;
 
-  console.log("user", userInCookie);
+  console.log("productstatus", productStatus);
 
   const [error, setError] = useState(false);
   const [nameCardError, setNameCardError] = useState(false);
@@ -170,7 +170,7 @@ const RentModalButton = ({ price, productId, productStatus }) => {
 
   return (
     <Box>
-      {productStatus == 1 ? (
+      {productStatus == 4 ? (
         <Button
           sx={{
             backgroundColor: "#E9ECF1",

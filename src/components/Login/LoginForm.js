@@ -256,7 +256,7 @@ export const LoginForm = (props) => {
           Not registered yet?
         </Typography>
         <Typography
-          onClick={() => router.replace("/signup")}
+          onClick={() => router.push("/signup")}
           variant="h6"
           sx={{ fontWeight: "bold", color: "#275F69", cursor: "pointer" }}
         >

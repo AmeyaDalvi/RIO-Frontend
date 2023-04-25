@@ -405,7 +405,7 @@ export default function Description({ pid }) {
                     <RentModalButton
                       price={product.price}
                       productId={product.pid}
-                      productStatus={productStat}
+                      productStatus={product.pStatus}
                     />
                   )}
 
