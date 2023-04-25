@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@alan-ai/alan-sdk-web": "^1.8.43",
+    "@emailjs/browser": "^3.11.0",
     "@emotion/react": "^11.10.6",
     "@emotion/server": "^11.10.0",
     "@emotion/styled": "^11.10.6",
@@ -28,6 +29,7 @@
     "js-cookie": "^3.0.1",
     "next": "13.1.6",
     "next-auth": "^4.19.2",
+    "next-cloudinary": "^4.4.0",
     "node-fetch": "^2.6.1",
     "react": "18.2.0",
     "react-date-range": "^1.4.0",

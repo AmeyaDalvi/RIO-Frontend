@@ -1,6 +1,6 @@
-import { useEffect, useRef } from 'react';
-import { useRouter } from 'next/router';
-import Talk from 'talkjs';
+import { useEffect, useRef } from "react";
+import { useRouter } from "next/router";
+import Talk from "talkjs";
 import styles from "styles/userchat.module.css";
 import { Box, Button, IconButton } from "@mui/material";
 import { Chat as ChatIcon, People } from '@mui/icons-material';
@@ -20,7 +20,7 @@ function initChatbox(currentUser, otherUser, chatboxEl) {
       const otherUserObject = otherUser ? JSON.parse(otherUser) : null;
 
       if (!currentUserObject || !otherUserObject) {
-        console.log('Missing user information');
+        console.log("Missing user information");
         return;
       }
 
@@ -44,7 +44,7 @@ function initChatbox(currentUser, otherUser, chatboxEl) {
       chatbox.select(conversation);
       chatbox.mount(chatboxEl.current);
     })
-    .catch(error => {
+    .catch((error) => {
       console.error(error instanceof Error ? error : new Error(error));
     });
 }
@@ -55,11 +55,13 @@ export default function Chat() {
   const { currentUser, otherUser } = router.query;
 
   useEffect(() => {
-    Talk.ready.then(() => {
-      initChatbox(currentUser, otherUser, chatboxEl);
-    }).catch(error => {
-      console.error(error instanceof Error ? error : new Error(error));
-    });
+    Talk.ready
+      .then(() => {
+        initChatbox(currentUser, otherUser, chatboxEl);
+      })
+      .catch((error) => {
+        console.error(error instanceof Error ? error : new Error(error));
+      });
   }, [currentUser, otherUser, chatboxEl]);
 
   return (

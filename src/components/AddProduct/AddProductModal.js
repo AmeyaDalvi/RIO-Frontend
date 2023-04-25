@@ -1,6 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Box } from "@mui/system";
 import {
+  Alert,
   Button,
   Divider,
   FormControl,
@@ -32,10 +33,12 @@ import "swiper/css/autoplay";
 
 import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
+import { CldUploadWidget } from "next-cloudinary";
 // import LocationMap from "components/ProductDescription/LocationMap";
 
-const RentModalButton = ({ price }) => {
+const AddProductModal = ({ price }) => {
   const router = useRouter();
+  const userCtx = useContext(UserContext);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorEl2, setAnchorEl2] = useState(null);
@@ -45,10 +48,52 @@ const RentModalButton = ({ price }) => {
   const [isUser, setIsUser] = useState({});
   const open = Boolean(anchorEl);
   const open2 = Boolean(anchorEl2);
+  const [error, setError] = useState(false);
+
+  const [titleError, setTitleError] = useState(false);
+  const [descError, setDescError] = useState(false);
+  const [categoryError, setCategoryError] = useState(false);
+  const [durationError, setDurationError] = useState(false);
+  const [priceError, setPriceError] = useState(false);
+  const [addressError, setAddressError] = useState(false);
+  const [streetError, setStreetError] = useState(false);
+  const [cityError, setCityError] = useState(false);
+  const [stateError, setStateError] = useState(false);
+  const [zipError, setZipError] = useState(false);
+  const [countryError, setCountryError] = useState(false);
+  const [contactInfoError, setContactInfoError] = useState(false);
+
+  const [imageUrls, setImageUrls] = useState([]);
+
+  const titleRef = useRef();
+  const descRef = useRef();
+  const priceRef = useRef();
+  const categoryRef = useRef();
+  const durationRef = useRef();
+  const streetRef = useRef();
+  const cityRef = useRef();
+  const stateRef = useRef();
+  const zipRef = useRef();
+  const countryRef = useRef();
+  const contactInfoRef = useRef();
 
   let userInCookie = Cookies.get("rioUser");
   userInCookie = userInCookie !== undefined ? JSON.parse(userInCookie) : null;
   const tokenInCookie = Cookies.get("rioUserToken");
+
+  useEffect(() => {
+    setTitleError(false);
+    setDescError(false);
+    setCategoryError(false);
+    setDurationError(false);
+    setPriceError(false);
+    setStreetError(false);
+    setCityError(false);
+    setStateError(false);
+    setZipError(false);
+    setCountryError(false);
+    setContactInfoError(false);
+  }, []);
 
   useEffect(() => {
     checkUserInCookie();
@@ -57,6 +102,149 @@ const RentModalButton = ({ price }) => {
   useEffect(() => {
     console.log("address", address);
   }, [address]);
+
+  const isInputError = () => {
+    let errorFlag = false;
+    const title = titleRef.current.value;
+    const desc = descRef.current.value;
+    const price = priceRef.current.value;
+    const category = selectedCategory;
+    const duration = selectedDuration;
+    const street = streetRef.current.value;
+    const city = cityRef.current.value;
+    const state = stateRef.current.value;
+    const zip = zipRef.current.value;
+    const country = countryRef.current.value;
+    const contactInfo = contactInfoRef.current.value;
+
+    setTitleError(false);
+    setDescError(false);
+    setCategoryError(false);
+    setDurationError(false);
+    setPriceError(false);
+    setStreetError(false);
+    setCityError(false);
+    setStateError(false);
+    setZipError(false);
+    setCountryError(false);
+    setContactInfoError(false);
+
+    if (title === "") {
+      errorFlag = true;
+      setTitleError(true);
+    }
+    if (desc === "") {
+      errorFlag = true;
+      setDescError(true);
+    }
+    if (category === "Category") {
+      errorFlag = true;
+      setCategoryError(true);
+    }
+    if (duration === "Duration") {
+      errorFlag = true;
+      setDurationError(true);
+    }
+    if (price === "") {
+      errorFlag = true;
+      setPriceError(true);
+    }
+    if (street === "") {
+      errorFlag = true;
+      setStreetError(true);
+    }
+    if (city === "") {
+      errorFlag = true;
+      setCityError(true);
+    }
+    if (state === "") {
+      errorFlag = true;
+      setStateError(true);
+    }
+    if (zip === "") {
+      errorFlag = true;
+      setZipError(true);
+    }
+    if (country === "") {
+      errorFlag = true;
+      setCountryError(true);
+    }
+    if (contactInfo === "") {
+      errorFlag = true;
+      setContactInfoError(true);
+    }
+
+    return errorFlag;
+  };
+
+  const userDataHandler = (e) => {
+    e.preventDefault();
+    const isError = isInputError();
+    isError && setError(true);
+
+    const imgurl = imageUrls;
+
+    if (!isError) {
+      const userData = {
+        name: titleRef.current.value,
+        description: descRef.current.value,
+        category: selectedCategory,
+        duration: selectedDuration,
+        price: priceRef.current.value,
+        sname: userInCookie["first_name"] + userInCookie["last_name"],
+        sstreet: streetRef.current.value,
+        scity: cityRef.current.value,
+        sstate: stateRef.current.value,
+        szip: zipRef.current.value,
+        scountry: countryRef.current.value,
+        scontact: contactInfoRef.current.value,
+        imgurl: String(imgurl),
+      };
+
+      setTitleError(false);
+      setDescError(false);
+      setCategoryError(false);
+      setDurationError(false);
+      setPriceError(false);
+      setStreetError(false);
+      setCityError(false);
+      setStateError(false);
+      setZipError(false);
+      setCountryError(false);
+      setContactInfoError(false);
+      addProductSubmitHandler(userData);
+    }
+  };
+
+  const addProductSubmitHandler = async (userData) => {
+    if (userData) {
+      console.log("inside if");
+      try {
+        const response = await fetch(
+          baseUrl + "/insertproduct?id=" + userInCookie["user_id"],
+          {
+            method: "POST",
+            headers: {
+              Authorization: "Bearer " + tokenInCookie,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(userData),
+          }
+        );
+
+        if (response.status === 200) {
+          const data = await response.json();
+          console.log("data", data);
+          userCtx.setSnackBar(true);
+          handleClose();
+        } else {
+          console.log("error");
+        }
+      } catch (error) {
+        console.log("error", error);
+      }
+    }
+  };
 
   const checkUserInCookie = () => {
     userInCookie ? setIsUser(userInCookie) : setIsUser({});
@@ -91,6 +279,14 @@ const RentModalButton = ({ price }) => {
     setAnchorEl2(null);
   };
 
+  const handleCloseSnackBar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpenSnackbar(false);
+  };
+
   const addProductHandler = () => {
     handleOpen();
   };
@@ -110,8 +306,6 @@ const RentModalButton = ({ price }) => {
 
       if (response.status === 200) {
         const data = await response.json();
-        console.log("data", data[0]);
-
         setAddress([
           data[0].Street,
           data[0].City,
@@ -130,9 +324,24 @@ const RentModalButton = ({ price }) => {
   };
 
   const [openModal, setOpenModal] = useState(false);
-  const handleOpen = () => setOpenModal(true);
+  const handleOpen = () => {
+    setOpenModal(true);
+  };
   const handleClose = () => {
+    setTitleError(false);
+    setDescError(false);
+    setCategoryError(false);
+    setDurationError(false);
+    setPriceError(false);
+    setStreetError(false);
+    setCityError(false);
+    setStateError(false);
+    setZipError(false);
+    setCountryError(false);
+    setContactInfoError(false);
     setOpenModal(false);
+    setError(false);
+    setImageUrls([]);
   };
 
   return (
@@ -170,6 +379,7 @@ const RentModalButton = ({ price }) => {
             boxShadow: 24,
             p: 4,
           }}
+          onSubmit={userDataHandler}
         >
           <Box
             sx={{
@@ -181,18 +391,26 @@ const RentModalButton = ({ price }) => {
             }}
           >
             <h2>Add Product</h2>
+            {error && (
+              <h4 style={{ color: "red" }}>
+                Fill out all the mandatory fields
+              </h4>
+            )}
+            {}
             <IconButton
               aria-label="close"
               color="inherit"
               size="small"
               onClick={() => {
                 setOpenModal(false);
+                handleClose();
               }}
             >
               <Close fontSize="inherit" />
             </IconButton>
           </Box>
-          <Divider variant="middle" />
+          <Divider variant="middle" sx={{ pt: 1 }} />
+
           <Box
             sx={{
               display: "flex",
@@ -219,9 +437,9 @@ const RentModalButton = ({ price }) => {
                 fullWidth
                 type="text"
                 font="inherit"
-                // onChange={(e) => {
-                //   setCardName(e.target.value);
-                // }}
+                error={titleError}
+                // helperText={titleError && "Title is required"}
+                inputRef={titleRef}
               />
               <TextField
                 id="outlined-basic-desc"
@@ -233,6 +451,9 @@ const RentModalButton = ({ price }) => {
                 font="inherit"
                 multiline
                 rows={4}
+                error={descError}
+                // helperText={descError && "Description is required"}
+                inputRef={descRef}
               />
             </Box>
             <Stack
@@ -294,6 +515,7 @@ const RentModalButton = ({ price }) => {
                   anchorEl={anchorEl}
                   open={open}
                   onClose={handleCategoryCloseAnchor}
+                  ref={categoryRef}
                 >
                   <MenuItem
                     onClick={() => {
@@ -384,6 +606,7 @@ const RentModalButton = ({ price }) => {
 
                     textTransform: "none",
                   }}
+                  ref={durationRef}
                 >
                   {selectedDuration}
                 </Button>
@@ -448,7 +671,10 @@ const RentModalButton = ({ price }) => {
                 </Menu>
               </Box>
               <FormControl>
-                <InputLabel htmlFor="outlined-adornment-amount">
+                <InputLabel
+                  htmlFor="outlined-adornment-amount"
+                  error={priceError}
+                >
                   Price
                 </InputLabel>
                 <OutlinedInput
@@ -457,6 +683,9 @@ const RentModalButton = ({ price }) => {
                     <InputAdornment position="start">$</InputAdornment>
                   }
                   label="Price"
+                  error={priceError}
+                  // helperText={priceError && "Price is required"}
+                  inputRef={priceRef}
                 />
               </FormControl>
             </Stack>
@@ -478,7 +707,7 @@ const RentModalButton = ({ price }) => {
               }}
             >
               Payment Location:
-              <Button
+              {/* <Button
                 variant="contained"
                 sx={{
                   background: "#000000",
@@ -491,7 +720,7 @@ const RentModalButton = ({ price }) => {
                 onClick={defaultAddressHandler}
               >
                 Use Default Address
-              </Button>
+              </Button> */}
             </Box>
 
             <Box
@@ -510,7 +739,6 @@ const RentModalButton = ({ price }) => {
                 spacing={1}
                 mb={2}
               >
-                {console.log(address)}
                 <TextField
                   id="outlined-controlled"
                   label="Street"
@@ -518,10 +746,10 @@ const RentModalButton = ({ price }) => {
                   placeholder="123 E John Hinkle"
                   fullWidth
                   type="text"
-                  value={address.length !== 0 ? address[0] : ""}
-                  // onChange={(e) => {
-                  //   setCardName(e.target.value);
-                  // }}
+                  // defaultValue={address.length !== 0 ? address[0] : ""}
+                  error={streetError}
+                  // helperText={addressError && "Address is required"}
+                  inputRef={streetRef}
                 />
                 <TextField
                   id="outlined-controlled"
@@ -530,10 +758,10 @@ const RentModalButton = ({ price }) => {
                   placeholder="Bloomington"
                   fullWidth
                   type="text"
-                  value={address.length !== 0 ? address[1] : ""}
-                  // onChange={(e) => {
-                  //   setCardNumber(e.target.value);
-                  // }}
+                  // defaultValue={address.length !== 0 ? address[1] : ""}
+                  error={cityError}
+                  // helperText={addressError && "Address is required"}
+                  inputRef={cityRef}
                 />
                 <TextField
                   id="outlined-controlled"
@@ -542,10 +770,10 @@ const RentModalButton = ({ price }) => {
                   placeholder="Indiana"
                   fullWidth
                   type="text"
-                  value={address.length !== 0 ? address[2] : ""}
-                  // onChange={(e) => {
-                  //   setCardNumber(e.target.value);
-                  // }}
+                  // defaultValue={address.length !== 0 ? address[2] : ""}
+                  error={stateError}
+                  // helperText={addressError && "Address is required"}
+                  inputRef={stateRef}
                 />
               </Stack>
               <Stack
@@ -563,10 +791,10 @@ const RentModalButton = ({ price }) => {
                   fullWidth
                   type="number"
                   placeholder="47408"
-                  value={address.length !== 0 ? address[4] : ""}
-                  // onChange={(e) => { d
-                  //   setExpiryDate(e.target.value);
-                  // }}
+                  // defaultValue={address.length !== 0 ? address[4] : ""}
+                  error={zipError}
+                  // helperText={addressError && "Address is required"}
+                  inputRef={zipRef}
                 />
                 <TextField
                   id="outlined-controlled"
@@ -575,10 +803,10 @@ const RentModalButton = ({ price }) => {
                   fullWidth
                   type="text"
                   placeholder="US"
-                  value={address.length !== 0 ? address[3] : ""}
-                  // onChange={(e) => {
-                  //   setCvv(e.target.value);
-                  // }}
+                  // defaultValue={address.length !== 0 ? address[3] : ""}
+                  error={countryError}
+                  // helperText={addressError && "Address is required"}
+                  inputRef={countryRef}
                 />
                 <TextField
                   id="outlined-basic"
@@ -587,47 +815,109 @@ const RentModalButton = ({ price }) => {
                   fullWidth
                   type="number"
                   placeholder="8126711325"
-                  // onChange={(e) => {
-                  //   setCvv(e.target.value);
-                  // }}
+                  error={contactInfoError}
+                  // helperText={addressError && "Address is required"}
+                  inputRef={contactInfoRef}
                 />
               </Stack>
-              <Stack
+              <Box
                 display="flex"
                 direction="row"
-                justifyContent="flex-end"
-                alignItems="center"
-                spacing={2}
+                justifyContent="space-between"
               >
-                <Button
-                  variant="contained"
-                  sx={{
-                    background: "#000000",
-                    color: "#ffffff",
-                    ":hover": {
+                <Stack
+                  display="flex"
+                  direction="row"
+                  justifyContent="flex-start"
+                  alignItems="center"
+                  spacing={2}
+                >
+                  {/* <Button
+                    variant="contained"
+                    sx={{
                       background: "#000000",
                       color: "#ffffff",
-                    },
-                  }}
-                  onClick={handleClose}
+                      ":hover": {
+                        background: "#000000",
+                        color: "#ffffff",
+                      },
+                    }}
+                    onClick={handleClose}
+                  >
+                    Upload
+                  </Button> */}
+
+                  <CldUploadWidget
+                    uploadPreset="rio-upload-preset"
+                    onUpload={(result) => {
+                      console.log(result.info.secure_url);
+                      const url = String(result.info.secure_url);
+                      setImageUrls([...imageUrls, url]);
+                    }}
+                  >
+                    {({ open }) => {
+                      function handleOnClick(e) {
+                        e.preventDefault();
+                        open();
+                      }
+                      return (
+                        <Button
+                          sx={{
+                            background: "#000000",
+                            color: "#ffffff",
+                            ":hover": {
+                              background: "#000000",
+                              color: "#ffffff",
+                            },
+                          }}
+                          onClick={handleOnClick}
+                        >
+                          Upload Images
+                        </Button>
+                      );
+                    }}
+                  </CldUploadWidget>
+                </Stack>
+                <Stack
+                  display="flex"
+                  direction="row"
+                  justifyContent="flex-end"
+                  alignItems="center"
+                  spacing={2}
                 >
-                  Cancel
-                </Button>
-                <Button
-                  variant="contained"
-                  sx={{
-                    background: "#000000",
-                    color: "#ffffff",
-                    ":hover": {
+                  <Button
+                    variant="contained"
+                    sx={{
+                      background: "#ffffff",
+                      color: "#000000",
+                      // borderBottom: "1px solid #666666",
+                      boxShadow: "none",
+                      ":hover": {
+                        background: "#ffffff",
+                        color: "#000000",
+                        boxShadow: "none",
+                      },
+                    }}
+                    onClick={handleClose}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    sx={{
                       background: "#000000",
                       color: "#ffffff",
-                    },
-                  }}
-                  // onClick={handleRent}
-                >
-                  Checkout
-                </Button>
-              </Stack>
+                      ":hover": {
+                        background: "#000000",
+                        color: "#ffffff",
+                      },
+                    }}
+                  >
+                    Checkout
+                  </Button>
+                </Stack>
+              </Box>
             </Box>
           </Box>
         </Box>
@@ -636,4 +926,4 @@ const RentModalButton = ({ price }) => {
   );
 };
 
-export default RentModalButton;
+export default AddProductModal;
