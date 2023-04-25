@@ -167,7 +167,7 @@ export default function Description({ pid }) {
     userCtx.setSnackBar(false);
   };
 
-  let fetchProductHandler = async (productId) => {
+  let fetchSellerIdHandler = async (productId) => {
     try {
         const res = await fetch(
           baseUrl + '/getsellerid',{
@@ -231,21 +231,6 @@ export default function Description({ pid }) {
 
   let fetchProductHandler = async (productId) => {
     try {
-      const res = await fetch(baseUrl + "/getsellerid", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ productid: productId }),
-      });
-      if (res.status === 200) {
-        const udata = await res.json();
-        console.log("SELLER ID - ", udata[0]["UserID"]);
-        setSellerId(udata[0]["UserID"]);
-      } else if (res.status === 401) {
-        console.log("Unauthorized");
-      }
-
       const response = await fetch(
         baseUrl + `/getproduct?productid=${productId}`,
         {
