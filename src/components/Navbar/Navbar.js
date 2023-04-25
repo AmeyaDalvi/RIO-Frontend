@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -36,7 +36,9 @@ function ResponsiveAppBar() {
   const [sideBar, setSideBar] = useState(false);
   const router = useRouter();
   const navbarPosition =
-    router.pathname === "/products" || router.pathname === "/products/[id]"
+    router.pathname === "/products" ||
+    router.pathname === "/products/[id]" ||
+    router.pathname === "/dashboard"
       ? "absolute"
       : "sticky";
   let userInCookie = Cookies.get("rioUser");
@@ -47,6 +49,9 @@ function ResponsiveAppBar() {
   const [clientWindowHeight, setClientWindowHeight] = useState("");
   const [boxShadow, setBoxShadow] = useState(0);
   const [backgroundTransparency, setBackgroundTransparency] = useState(0);
+
+  const servicesRef = useRef();
+  const aboutUsRef = useRef();
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);

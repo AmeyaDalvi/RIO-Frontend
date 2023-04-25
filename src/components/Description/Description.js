@@ -292,6 +292,7 @@ export default function Description({ pid }) {
     if (productStatus.status === 200) {
       const pstatus = await productStatus.json();
       setProductStatus(pstatus[0]["Result"]);
+      console.log("PRODUCT STATUS - ", pstatus[0]["Result"]);
     } else if (productStatus.status === 401) {
       console.log("Unauthorized");
     }

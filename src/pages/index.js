@@ -11,9 +11,13 @@ export default function Home() {
       {/* <div className={styles.container}>Home</div> */}
       <Landing />
       {/* <div className={styles.container}>Services</div> */}
-      <Services />
+      <section id="services">
+        <Services />
+      </section>
       {/* <div className={styles.container}>About Us</div> */}
-      <AboutUs />
+      <section id="aboutus">
+        <AboutUs />
+      </section>
       {/* <div className={styles.container}>Footer</div> */}
       <Footer />
       {/* <Chatbot/> */}

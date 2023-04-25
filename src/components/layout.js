@@ -19,7 +19,7 @@ const layout = ({ children }) => {
 
       {children}
       {/* <Chatbot /> */}
-      <AlanChat />
+      {/* <AlanChat /> */}
     </>
   );
 };

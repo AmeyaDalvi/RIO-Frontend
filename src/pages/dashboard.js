@@ -33,10 +33,8 @@ const dashboard = () => {
       setIsUser({});
     }
   };
-  const getAllUserPostedProducts = async (userData) => {
+  const getAllUserPostedProducts = async () => {
     try {
-      console.log("isuser ", tokenInCookie);
-      console.log("hello", userInCookie["user_id"]);
       const response = await fetch(
         baseUrl + "/upposted?id=" + userInCookie["user_id"],
         {
@@ -45,7 +43,9 @@ const dashboard = () => {
             Authorization: "Bearer " + tokenInCookie,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ emailId: userInCookie["email_id"] }),
+          body: JSON.stringify({
+            emailId: userInCookie["email_id"],
+          }),
         }
       );
       if (response.status === 200) {
@@ -63,14 +63,17 @@ const dashboard = () => {
 
   const getAllUserPurchasedProducts = async () => {
     try {
-      const response = await fetch(baseUrl + "/uppurchased?id=" + userInCookie["user_id"], {
-        method: "POST",
-        headers: {
-          Authorization: "Bearer " + tokenInCookie,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ emailId: userInCookie["email_id"] }),
-      });
+      const response = await fetch(
+        baseUrl + "/uppurchased?id=" + userInCookie["user_id"],
+        {
+          method: "POST",
+          headers: {
+            Authorization: "Bearer " + tokenInCookie,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ emailId: userInCookie["email_id"] }),
+        }
+      );
 
       if (response.status === 200) {
         const data = await response.json();
@@ -88,14 +91,14 @@ const dashboard = () => {
   return (
     <div className={styles.container}>
       <div className={styles.products}>
-        <h2>You Posted</h2>
+        <h2 style={{ marginBottom: "20px" }}>You Posted</h2>
         {postedProducts.length !== 0 ? (
           <List input="" rating="-1" price="-1" products={postedProducts} />
         ) : (
           "There are no posted products by user"
         )}
 
-        <h2>You Purchased</h2>
+        <h2 style={{ marginBottom: "20px" }}>You Purchased</h2>
         {purchasedProducts.length !== 0 ? (
           <List input="" rating="-1" price="-1" products={purchasedProducts} />
         ) : (

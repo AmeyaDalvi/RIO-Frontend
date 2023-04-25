@@ -16,7 +16,7 @@ export default function ActionAreaCard({ pname, rating, img, price }) {
         // boxShadow: "0px 0px 5px rgba(0,0,0,0.3)",
         boxShadow: "none",
         borderRadius: "10px",
-        maxWidth: "225px",
+        maxWidth: router.pathname === "/dashboard" ? "280px" : "225px",
         ":hover": {
           // boxShadow: 20, // theme.shadows[20]
           boxShadow: "4px 4px 8px rgba(0,0,0,0.1)",

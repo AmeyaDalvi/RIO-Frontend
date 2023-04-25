@@ -9,11 +9,21 @@
   align-items: left;
   height: 90vh;
 }
-@media screen and (max-width: 767px) {
+
+@media screen and (min-width: 601px) and (max-width: 768px) {
   .container {
     margin-left: 1rem;
     margin-right: 1rem;
-    margin-top: 10rem;
+    /* margin-top: 10rem; */
     margin-bottom: 10rem;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .container {
+    margin-left: 1rem;
+    margin-right: 1rem;
+    margin-top: 20rem;
+    margin-bottom: 25rem;
   }
 }
