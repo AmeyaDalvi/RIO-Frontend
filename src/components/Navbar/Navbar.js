@@ -39,7 +39,8 @@ function ResponsiveAppBar() {
     router.pathname === "/products" ||
     router.pathname === "/products/[id]" ||
     router.pathname === "/dashboard" ||
-    router.pathname === "/profile"
+    router.pathname === "/profile" ||
+    router.pathname === "/admin"
       ? "absolute"
       : "sticky";
   let userInCookie = Cookies.get("rioUser");

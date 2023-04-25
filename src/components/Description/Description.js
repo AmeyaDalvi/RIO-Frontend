@@ -218,22 +218,25 @@ export default function Description({ pid }) {
       console.log(error);
     }
 
-    const productStatus = await fetch(
-      baseUrl +
-        `/getrentedproductstatus?id=${userInCookie["user_id"]}&product_id=${productId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
+    if (userInCookie !== undefined) {
+      const user_id = userInCookie ? userInCookie["UserID"] : 1;
+      const productStatus = await fetch(
+        baseUrl +
+          `/getrentedproductstatus?id=${user_id}&product_id=${productId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (productStatus.status === 200) {
+        const pstatus = await productStatus.json();
+        setProductStatus(pstatus[0]["Result"]);
+        console.log("PRODUCT STATUS - ", pstatus[0]["Result"]);
+      } else if (productStatus.status === 401) {
+        console.log("Unauthorized");
       }
-    );
-    if (productStatus.status === 200) {
-      const pstatus = await productStatus.json();
-      setProductStatus(pstatus[0]["Result"]);
-      console.log("PRODUCT STATUS - ", pstatus[0]["Result"]);
-    } else if (productStatus.status === 401) {
-      console.log("Unauthorized");
     }
   };
 
@@ -395,15 +398,16 @@ export default function Description({ pid }) {
                   gap: 1,
                 }}
               >
-                {userInCookie["user_id"] !== seller.id ? (
-                <RentModalButton
-                  price={product.price}
-                  productId={product.pid}
-                  productStatus={productStat}
-                />
-                ) : (
-                  console.log("user and seller same")
-                )}
+                {userInCookie &&
+                  userInCookie["first_name"] !== "admin" &&
+                  userInCookie["last_name"] !== "admin" &&
+                  userInCookie["user_id"] !== seller.id && (
+                    <RentModalButton
+                      price={product.price}
+                      productId={product.pid}
+                      productStatus={productStat}
+                    />
+                  )}
 
                 {product.pStatus == 4 ? (
                   <ChatButton otherUser={seller} renter={renter} />
