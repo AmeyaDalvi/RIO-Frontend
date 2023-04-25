@@ -278,7 +278,7 @@ export default function Description({ pid }) {
     //         response[0].SIZip
     //     );
     //   });)
-    if(isUserLoggedIn){
+    // if(isUserLoggedIn){
     const productStatus = await fetch(
       baseUrl +
         `/getrentedproductstatus?id=${userInCookie["user_id"]}&product_id=${productId}`,
@@ -295,7 +295,7 @@ export default function Description({ pid }) {
     } else if (productStatus.status === 401) {
       console.log("Unauthorized");
     }
-  }
+  // }
   };
 
   return (
