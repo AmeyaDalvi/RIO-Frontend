@@ -63,7 +63,7 @@ const dashboard = () => {
 
   const getAllUserPurchasedProducts = async () => {
     try {
-      const response = await fetch(baseUrl + "/uppurchased", {
+      const response = await fetch(baseUrl + "/uppurchased?id=" + userInCookie["user_id"], {
         method: "POST",
         headers: {
           Authorization: "Bearer " + tokenInCookie,
