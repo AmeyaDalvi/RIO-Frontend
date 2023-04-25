@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import styles from "styles/userchat.module.css";
 import { Box, Button, IconButton, Avatar } from "@mui/material";
 import { Chat as ChatIcon, People } from "@mui/icons-material";
+import Cookies from "js-cookie";
 
 const admin = JSON.stringify({
   id: 17,
