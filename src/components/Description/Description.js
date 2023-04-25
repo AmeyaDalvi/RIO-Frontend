@@ -54,9 +54,6 @@ export default function Description({ pid }) {
   const router = useRouter();
   // const { productId } = router.query;
   const verify = Cookies.get("rioUserToken");
-  const userCtx = useContext(UserContext);
-
-  const openSnackbar = userCtx.snackBar;
 
   const rentBtnHandler = () => {
     handleOpen();
@@ -66,7 +63,7 @@ export default function Description({ pid }) {
   };
 
   const [product, setProduct] = useState(0);
-  const [seller, setSeller] = useState(null);
+  const [seller, setSeller] = useState({});
   const [sellerId, setSellerId] = useState(0);
   const [renter, setRenter] = useState(null);
   const [renterId, setRenterId] = useState(0);
@@ -75,7 +72,7 @@ export default function Description({ pid }) {
   const handleOpen = () => setOpenModal(true);
   const handleClose = () => setOpenModal(false);
   const [open, setOpen] = useState(false);
-  const [productStatus, setProductStatus] = useState(0);
+  const [productStat, setProductStatus] = useState(0);
 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -104,52 +101,23 @@ export default function Description({ pid }) {
 
   useEffect(() => {
     fetchProductHandler(pid);
+    fetchSellerIdHandler(pid);
+    fetchRenterIdHandler(pid);
     setProduct({});
   }, []);
-
-  useEffect(() => {
-    fetchSellerIdHandler(pid);
-  }, []);
-
-  useEffect(() => {
-    setSellerInfo();
-  }, [sellerId]);
-
-  useEffect(() => {
-    fetchRenterIdHandler(pid);
-  }, []);
-
-  // useEffect(() => {
-  //   setRenterInfo();
-  // }, [renterId]);
-
-  // useEffect(() => {
-  //   setSellerIdHandler(pid);
-  //   setSeller({});
-  // }, []);
-  
 
   useEffect(() => {
     costCalculator();
   }, [endDate]);
 
-  const setSellerInfo = () => {
+  const setSellerInfo = (data) => {
     setSeller({
-      "id": sellerId,
-      "name": product.SIName,
-      "welcomeMessage": "Hey there!",
-      "role": "default"
+      id: data[0]["UserID"],
+      name: data[0]["FName"] + " " + data[0]["LName"],
+      welcomeMessage: "Hey there!",
+      role: "default",
     });
   };
-
-  // const setRenterInfo = () => {
-  //   setRenter({
-  //     "id": renterId,
-  //     "name": product.SIName,
-  //     "welcomeMessage": "Hey there!",
-  //     "role": "default"
-  //   });
-  // };
 
   const costCalculator = () => {
     let d1 = new Date(startDate).toISOString().split("T")[0];
@@ -159,75 +127,56 @@ export default function Description({ pid }) {
     setTotalCost(diffDays === 0 ? 1 * product.price : diffDays * product.price);
   };
 
-  const handleCloseSnackBar = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    userCtx.setSnackBar(false);
-  };
-
   let fetchSellerIdHandler = async (productId) => {
     try {
-        const res = await fetch(
-          baseUrl + '/getsellerid',{
-            method:"POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({productid: productId}),
-          }
-        )
-        if (res.status === 200) {
-          const udata = await res.json();
-          console.log("SELLER ID - ", udata[0]["UserID"])
-          setSellerId(udata[0]["UserID"]);
-          // setSeller({
-          //   "id": udata[0]["UserID"],
-          //   "name": product.SIName,
-          //   "welcomeMessage": "Hey there!",
-          //   "role": "default"
-          // });
-      console.log("IMPPP - ", seller, sellerId);
-        } else if (res.status === 401) {
-          console.log("Unauthorized");
-        }
-        
+      const res = await fetch(baseUrl + `/getsellerid`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ productid: productId }),
+      });
+      if (res.status === 200) {
+        const udata = await res.json();
+        console.log("SELLER ID - ", udata[0]["UserID"]);
+        // setSellerId(udata[0]["UserID"]);
+        setSellerInfo(udata);
+        console.log("IMPPP - ", udata);
+      } else if (res.status === 401) {
+        console.log("Unauthorized");
+      }
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   let fetchRenterIdHandler = async (productId) => {
     try {
-        const res = await fetch(
-          baseUrl + '/getrenterdetails',{
-            method:"POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({productid: productId}),
-          }
-        )
-        if (res.status === 200) {
-          const udata = await res.json();
-          // console.log("SELLER ID - ", udata[0]["UserID"])
-          // setRenter(udata);
-          setRenter({
-            "id": udata[0]["UserID"],
-            "name": udata[0].FName + " " + udata[0].LName,
-            "welcomeMessage": "Hey there!",
-            "role": "default"
-          });
-      console.log("RENTER ", renter);
-        } else if (res.status === 401) {
-          console.log("Unauthorized");
-        }
-        
+      const res = await fetch(baseUrl + "/getrenterdetails", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ productid: productId }),
+      });
+      if (res.status === 200) {
+        const udata = await res.json();
+        // console.log("SELLER ID - ", udata[0]["UserID"])
+        // setRenter(udata);
+        setRenter({
+          id: udata[0]["UserID"],
+          name: udata[0].FName + " " + udata[0].LName,
+          welcomeMessage: "Hey there!",
+          role: "default",
+        });
+        console.log("RENTER ", renter);
+      } else if (res.status === 401) {
+        console.log("Unauthorized");
+      }
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   let fetchProductHandler = async (productId) => {
     try {
@@ -256,7 +205,6 @@ export default function Description({ pid }) {
             " " +
             data.SIZip
         );
-        
       } else if (response.status === 401) {
         console.log("Unauthorized");
       } else if (response.status === 403) {
@@ -266,19 +214,6 @@ export default function Description({ pid }) {
       console.log(error);
     }
 
-    // fetch(`getproduct?productid=${productId}`)
-    //   .then((response) => response.json())
-    //   .then((response) => {
-    //     setProduct(response[0]);
-    //     setAddress(
-    //       response[0].SIStreet +
-    //         response[0].SICity +
-    //         response[0].SIState +
-    //         response[0].SICountry +
-    //         response[0].SIZip
-    //     );
-    //   });)
-    // if(isUserLoggedIn){
     const productStatus = await fetch(
       baseUrl +
         `/getrentedproductstatus?id=${userInCookie["user_id"]}&product_id=${productId}`,
@@ -296,7 +231,6 @@ export default function Description({ pid }) {
     } else if (productStatus.status === 401) {
       console.log("Unauthorized");
     }
-  // }
   };
 
   return (
@@ -354,29 +288,6 @@ export default function Description({ pid }) {
                 modules={[Autoplay, Pagination, Navigation]}
                 className="mySwiper"
               >
-                {/* <SwiperSlide style={{ height: "300px", weight: "600px" }}>
-                  <img
-                    style={{
-                      display: "block",
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                    src={product.img}
-                  />
-                </SwiperSlide>
-                <SwiperSlide style={{ height: "300px", weight: "600px" }}>
-                  <img
-                    style={{
-                      display: "block",
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                    src={product.img}
-                  />
-                </SwiperSlide> */}
-
                 {product["img"].map((img) => (
                   <SwiperSlide style={{ height: "300px", weight: "600px" }}>
                     <img
@@ -410,7 +321,7 @@ export default function Description({ pid }) {
               // border="2px solid red"
             >
               <h1>{product.pname}</h1>
-              {productStatus == 1 ? (
+              {productStat == 1 ? (
                 <Box
                   sx={{
                     display: "flex",
@@ -483,9 +394,9 @@ export default function Description({ pid }) {
                 <RentModalButton
                   price={product.price}
                   productId={product.pid}
-                  productStatus={productStatus}
+                  productStatus={productStat}
                 />
-                {isUserLoggedIn ? (
+                {productStat == 1 && seller !== {} ? (
                   <ChatButton otherUser={seller} renter={renter} />
                 ) : (
                   console.log("chat not available")
@@ -553,43 +464,6 @@ export default function Description({ pid }) {
               productId={product.pid}
             />
           </Box>
-          {/* {isUserLoggedIn ? (
-            <Box
-              sx={{
-                fontSize: "1rem",
-                marginTop: "0.7rem",
-                marginBottom: "0.7rem",
-                position: "center",
-                display: "flex",
-                justifyContent: "center",
-              }}
-            >
-              <AddReviewModalButton
-                userid={userInCookie["user_id"]}
-                productid={product.pid}
-              />
-            </Box>
-          ) : (
-            console.log("user not logged in")
-          )}*/}
-          <Snackbar
-            open={openSnackbar}
-            autoHideDuration={3000}
-            onClose={handleCloseSnackBar}
-            anchorOrigin={{ vertical: "top", horizontal: "right" }}
-          >
-            <Alert
-              onClose={handleCloseSnackBar}
-              sx={{
-                width: "100%",
-                color: "#fff",
-                backgroundColor: "#333",
-                borderRadius: "15px",
-              }}
-            >
-              Product Added Succesfully!
-            </Alert>
-          </Snackbar>
         </Box>
       )}
     </Container>

@@ -38,7 +38,8 @@ function ResponsiveAppBar() {
   const navbarPosition =
     router.pathname === "/products" ||
     router.pathname === "/products/[id]" ||
-    router.pathname === "/dashboard"
+    router.pathname === "/dashboard" ||
+    router.pathname === "/profile"
       ? "absolute"
       : "sticky";
   let userInCookie = Cookies.get("rioUser");
